@@ -237,7 +237,7 @@ class AIService extends Manager
     /**
      * Alias for answer to match README usage.
      *
-     * @return string
+     * @return AIResponse
      */
     public function run() : AIResponse
     {
