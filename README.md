@@ -214,6 +214,19 @@ public function boot()
 
 Your custom provider needs to implement the `AIMatchFun\LaravelAI\Contracts\AIProvider` interface or extend the `AIMatchFun\LaravelAI\Services\Providers\AbstractProvider` class.
 
+## Contributing
+
+Contributions are welcome! If you would like to improve this package, please follow these steps:
+
+1. Fork the repository.
+2. Create a branch for your feature or bugfix (`git checkout -b my-feature`).
+3. Make your changes and add tests if necessary.
+4. Commit your changes (`git commit -am 'Add new feature'`).
+5. Push to your branch (`git push origin my-feature`).
+6. Open a Pull Request describing your changes.
+
+Please follow the project's code style and write tests whenever possible.
+
 ## License
 
 This package is open-sourced software licensed under the MIT license.
