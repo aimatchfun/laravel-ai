@@ -3,9 +3,8 @@
 namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 use AIMatchFun\LaravelAI\Services\AICreativity;
 
@@ -123,22 +122,21 @@ class AIService extends Manager
         if ($this->systemInstruction) {
             $provider->setSystemInstruction($this->systemInstruction);
         }
-        
-        if (!empty($this->userMessages)) {
-            $provider->setUserMessages($this->userMessages);
+
+        if (empty($this->userMessages)) {
+            throw new InvalidArgumentException('No user messages provided. Call withPrompt() before calling run().');
         }
+        
+        $provider->setUserMessages($this->userMessages);
         
         $provider->setCreativityLevel($this->creativity);
         
         $response = $provider->generateResponse();
         
         $historyEnabled = $this->config->get('ai.conversation_history.enabled');
+
         if (!$historyEnabled) {
             return $response;
-        }
-        
-        if (!$this->conversationHistoryConnection) {
-            throw new InvalidConversationHistoryException('Conversation history connection not set');
         }
         
         foreach ($this->userMessages as $msg) {
@@ -252,17 +250,26 @@ class AIService extends Manager
         }
         
         $history = DB::connection(config('ai.conversation_history.connection'))
-        ->table('laravelai_conversation_histories')
-        ->where('conversation_id', $conversationId)
-        ->orderBy('created_at')
-        ->get();
+            ->table('laravelai_conversation_histories')
+            ->where('conversation_id', $conversationId)
+            ->orderBy('created_at')
+            ->get();
+
+        $this->conversationId = $conversationId;
         
-        $this->userMessages = $history->map(function ($row) {
+        $historyMessages = $history->map(function ($row) {
             return [
                 'role' => $row->role,
                 'content' => $row->content,
             ];
         })->toArray();
+        
+        // Mescla as mensagens do histórico com as já presentes em userMessages
+        if (!empty($this->userMessages)) {
+            $this->userMessages = array_merge($historyMessages, $this->userMessages);
+        } else {
+            $this->userMessages = $historyMessages;
+        }
         
         return $this;
     }

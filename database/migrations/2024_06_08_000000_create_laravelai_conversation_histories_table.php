@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('laravelai_conversation_histories', function (Blueprint $table) {
             $table->id();
-            $table->uuid('conversation_id')->index();
+            $table->uuid('conversation_id')->index()->nullable();
             $table->string('provider');
             $table->string('model')->nullable();
             $table->string('role');
