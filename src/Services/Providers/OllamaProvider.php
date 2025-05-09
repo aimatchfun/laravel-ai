@@ -4,6 +4,7 @@ namespace AIMatchFun\LaravelAI\Services\Providers;
 
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OllamaProvider extends AbstractProvider
 {
@@ -63,6 +64,8 @@ class OllamaProvider extends AbstractProvider
         $messages = array_merge($messages, $this->userMessages);
         
         $payload['messages'] = $messages;
+
+        Log::debug('Ollama request payload: ' . json_encode($payload));
         
         $response = Http::timeout($this->timeout)->post(rtrim($this->baseUrl, '/') . '/api/chat', $payload);
         
