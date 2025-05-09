@@ -40,7 +40,7 @@ class AIService extends Manager
     protected $conversationHistoryConnection = null;
 
     /**
-     * @var int|null
+     * @var string|null
      */
     protected $conversationId = null;
 
@@ -136,7 +136,7 @@ class AIService extends Manager
                     ->table('laravelai_conversation_histories')
                     ->orderByDesc('conversation_id')
                     ->first();
-                $this->conversationId = $last ? ($last->conversation_id + 1) : 1;
+                $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
             }
             foreach ($this->userMessages as $msg) {
                 $this->persistMessageToHistory($msg['role'], $msg['content']);
@@ -147,7 +147,7 @@ class AIService extends Manager
                 $last = \DB::table('laravelai_conversation_histories')
                     ->orderByDesc('conversation_id')
                     ->first();
-                $this->conversationId = $last ? ($last->conversation_id + 1) : 1;
+                $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
             }
             foreach ($this->userMessages as $msg) {
                 $this->persistMessageToHistory($msg['role'], $msg['content']);
@@ -242,7 +242,7 @@ class AIService extends Manager
     public function run() : AIResponse
     {
         $response = $this->answer();
-        return new AIResponse($this->conversationId, $response);
+        return new AIResponse((string)$this->conversationId, $response);
     }
 
     /**
