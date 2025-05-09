@@ -17,6 +17,11 @@
 ### Migration
 - Migration para a tabela `laravelai_conversation_histories` com suporte a múltiplas conversas e agrupamento por `conversation_id`.
 
+## [1.0.2] - 2024-06-08
+
+### Added
+- Seção no README explicando como rodar a migration necessária para o histórico de conversas, incluindo instrução de uso do comando `php artisan migrate`.
+
 ---
 
 Para detalhes de uso e exemplos, consulte o README.md. 
