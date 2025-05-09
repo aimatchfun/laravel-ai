@@ -22,8 +22,11 @@ return [
     | will not attempt to read or write conversation history to the database.
     |
     */
-    'conversation_history_enabled' => env('AI_CONVERSATION_HISTORY_ENABLED', false),
-    'conversation_history_connection' => env('AI_CONVERSATION_HISTORY_CONNECTION', null),
+    'conversation_history' => [
+        'enabled' => env('AI_CONVERSATION_HISTORY_ENABLED', false),
+
+        'connection' => env('AI_CONVERSATION_HISTORY_DB_CONNECTION', null),
+    ],
 
     /*
     |--------------------------------------------------------------------------
