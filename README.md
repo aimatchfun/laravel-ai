@@ -20,9 +20,25 @@ php artisan vendor:publish --provider="AIMatchFun\LaravelAI\Providers\AIServiceP
 
 This will publish a `config/ai.php` file where you can configure your AI providers.
 
+### Conversation History Configuration
+
+By default, conversation history is **disabled**. If you want to enable conversation history (persisting messages in the database), set the following in your `.env` file:
+
+```
+AI_CONVERSATION_HISTORY_ENABLED=true
+```
+
+Or directly in `config/ai.php`:
+
+```php
+'conversation_history_enabled' => true,
+```
+
+If conversation history is disabled, you do **not** need to run the migrations and no data will be stored in the database, even if you use the `withConversationHistory` method.
+
 ### Run the migrations
 
-If you want to use conversation history, you need to run the migration to create the necessary table:
+If you want to use conversation history, you need to run the migration to create the necessary table **and** enable the option as described above:
 
 ```bash
 php artisan migrate
@@ -142,6 +158,8 @@ $answer = $response->answer; // string
 - `answer`: The AI's response to your prompt(s).
 
 ### Conversation History
+
+> **Note:** Conversation history will only be persisted if `conversation_history_enabled` is set to `true` in your configuration or `.env` file.
 
 The `withConversationHistory` method uses the database connection specified in your configuration file (`config/ai.php`). For example, if you use `withConversationHistory('mysql')`, the conversation will be persisted using the `mysql` connection defined in your Laravel project.
 
