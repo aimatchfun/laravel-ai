@@ -1,11 +1,11 @@
 {
-    "name": "daavelar/laravel-ai",
+    "name": "aimatchfun/laravel-ai",
     "description": "Laravel AI integration for multiple providers",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Diego Avelar",
+            "name": "AIMatchFun",
             "email": "diego@aimatch.fun"
         }
     ],
@@ -19,21 +19,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Daavelar\\LaravelAI\\": "src/"
+            "AIMatchFun\\LaravelAI\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Daavelar\\LaravelAI\\Tests\\": "tests/"
+            "AIMatchFun\\LaravelAI\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Daavelar\\LaravelAI\\Providers\\AIServiceProvider"
+                "AIMatchFun\\LaravelAI\\Providers\\AIServiceProvider"
             ],
             "aliases": {
-                "AI": "Daavelar\\LaravelAI\\Facades\\AI"
+                "AI": "AIMatchFun\\LaravelAI\\Facades\\AI"
             }
         }
     },

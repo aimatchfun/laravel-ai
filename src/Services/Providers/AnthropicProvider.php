@@ -1,6 +1,6 @@
 <?php
 
-namespace Daavelar\LaravelAI\Services\Providers;
+namespace AIMatchFun\LaravelAI\Services\Providers;
 
 use Exception;
 use Illuminate\Support\Facades\Http;

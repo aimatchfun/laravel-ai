@@ -1,10 +1,11 @@
 <?php
 
-namespace Daavelar\LaravelAI\Services;
+namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
 use InvalidArgumentException;
-use Daavelar\LaravelAI\Services\AICreativity;
+
+use AIMatchFun\LaravelAI\Services\AICreativity;
 
 class AIService extends Manager
 {
@@ -161,7 +162,7 @@ class AIService extends Manager
      * Create an instance of the specified driver.
      *
      * @param string $driver
-     * @return \Daavelar\LaravelAI\Contracts\AIProvider
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
      *
      * @throws \InvalidArgumentException
      */
@@ -179,7 +180,7 @@ class AIService extends Manager
     /**
      * Create the Ollama driver.
      *
-     * @return \Daavelar\LaravelAI\Contracts\AIProvider
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
      */
     protected function createOllamaDriver()
     {
@@ -194,7 +195,7 @@ class AIService extends Manager
     /**
      * Create the OpenAI driver.
      *
-     * @return \Daavelar\LaravelAI\Contracts\AIProvider
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
      */
     protected function createOpenaiDriver()
     {
@@ -209,7 +210,7 @@ class AIService extends Manager
     /**
      * Create the Anthropic driver.
      *
-     * @return \Daavelar\LaravelAI\Contracts\AIProvider
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
      */
     protected function createAnthropicDriver()
     {

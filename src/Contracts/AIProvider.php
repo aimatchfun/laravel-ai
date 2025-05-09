@@ -1,6 +1,6 @@
 <?php
 
-namespace Daavelar\LaravelAI\Contracts;
+namespace AIMatchFun\LaravelAI\Contracts;
 
 interface AIProvider
 {

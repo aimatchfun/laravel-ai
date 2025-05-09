@@ -1,8 +1,8 @@
 <?php
 
-namespace Daavelar\LaravelAI\Services\Providers;
+namespace AIMatchFun\LaravelAI\Services\Providers;
 
-use Daavelar\LaravelAI\Contracts\AIProvider;
+use AIMatchFun\LaravelAI\Contracts\AIProvider;
 
 abstract class AbstractProvider implements AIProvider
 {

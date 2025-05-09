@@ -1,8 +1,8 @@
 <?php
 
-namespace Daavelar\LaravelAI\Providers;
+namespace AIMatchFun\LaravelAI\Providers;
 
-use Daavelar\LaravelAI\Services\AIService;
+use AIMatchFun\LaravelAI\Services\AIService;
 use Illuminate\Support\ServiceProvider;
 
 class AIServiceProvider extends ServiceProvider

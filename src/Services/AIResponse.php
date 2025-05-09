@@ -1,6 +1,6 @@
 <?php
 
-namespace Daavelar\LaravelAI\Services;
+namespace AIMatchFun\LaravelAI\Services;
 
 class AIResponse
 {
