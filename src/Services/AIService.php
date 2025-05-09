@@ -194,7 +194,8 @@ class AIService extends Manager
         
         return new Providers\OllamaProvider(
             $config['base_url'] ?? 'http://localhost:11434',
-            $config['default_model'] ?? 'llama3'
+            $config['default_model'] ?? 'llama3',
+            $config['timeout'] ?? 30
         );
     }
 
@@ -209,7 +210,8 @@ class AIService extends Manager
         
         return new Providers\OpenAIProvider(
             $config['api_key'] ?? '',
-            $config['default_model'] ?? 'gpt-4o'
+            $config['default_model'] ?? 'gpt-4o',
+            $config['timeout'] ?? 30
         );
     }
 
@@ -224,7 +226,8 @@ class AIService extends Manager
         
         return new Providers\AnthropicProvider(
             $config['api_key'] ?? '',
-            $config['default_model'] ?? 'claude-3-opus-20240229'
+            $config['default_model'] ?? 'claude-3-opus-20240229',
+            $config['timeout'] ?? 30
         );
     }
 

@@ -58,16 +58,19 @@ return [
         'ollama' => [
             'base_url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
             'default_model' => env('OLLAMA_DEFAULT_MODEL', 'llama3'),
+            'timeout' => env('OLLAMA_TIMEOUT', 30), // Timeout in seconds
         ],
         
         'openai' => [
             'api_key' => env('OPENAI_API_KEY'),
             'default_model' => env('OPENAI_DEFAULT_MODEL', 'gpt-4o'),
+            'timeout' => env('OPENAI_TIMEOUT', 30), // Timeout in seconds
         ],
         
         'anthropic' => [
             'api_key' => env('ANTHROPIC_API_KEY'),
             'default_model' => env('ANTHROPIC_DEFAULT_MODEL', 'claude-3-opus-20240229'),
+            'timeout' => env('ANTHROPIC_TIMEOUT', 30), // Timeout in seconds
         ],
     ],
 ];
@@ -79,13 +82,18 @@ You can also set these values in your `.env` file:
 AI_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_DEFAULT_MODEL=llama3
+OLLAMA_TIMEOUT=30
 
 OPENAI_API_KEY=your-openai-api-key
 OPENAI_DEFAULT_MODEL=gpt-4o
+OPENAI_TIMEOUT=30
 
 ANTHROPIC_API_KEY=your-anthropic-api-key
 ANTHROPIC_DEFAULT_MODEL=claude-3-opus-20240229
+ANTHROPIC_TIMEOUT=30
 ```
+
+**Timeout:** You can set the timeout (in seconds) for each provider. If a request takes longer than this value, it will fail with a timeout error. The default is 30 seconds for all providers.
 
 ## Usage
 

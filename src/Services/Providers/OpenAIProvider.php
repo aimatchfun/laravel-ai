@@ -18,16 +18,23 @@ class OpenAIProvider extends AbstractProvider
     protected $model;
 
     /**
+     * @var int
+     */
+    protected $timeout;
+
+    /**
      * Create a new OpenAI provider instance.
      *
      * @param string $apiKey
      * @param string $defaultModel
+     * @param int $timeout
      * @return void
      */
-    public function __construct(string $apiKey, string $defaultModel)
+    public function __construct(string $apiKey, string $defaultModel, int $timeout = 30)
     {
         $this->apiKey = $apiKey;
         $this->model = $defaultModel;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -65,7 +72,7 @@ class OpenAIProvider extends AbstractProvider
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json'
-            ])->post('https://api.openai.com/v1/chat/completions', $payload);
+            ])->timeout($this->timeout)->post('https://api.openai.com/v1/chat/completions', $payload);
 
             if ($response->successful()) {
                 $data = $response->json();

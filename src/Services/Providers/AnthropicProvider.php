@@ -18,16 +18,23 @@ class AnthropicProvider extends AbstractProvider
     protected $model;
 
     /**
+     * @var int
+     */
+    protected $timeout;
+
+    /**
      * Create a new Anthropic provider instance.
      *
      * @param string $apiKey
      * @param string $defaultModel
+     * @param int $timeout
      * @return void
      */
-    public function __construct(string $apiKey, string $defaultModel)
+    public function __construct(string $apiKey, string $defaultModel, int $timeout = 30)
     {
         $this->apiKey = $apiKey;
         $this->model = $defaultModel;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -69,7 +76,7 @@ class AnthropicProvider extends AbstractProvider
                 'x-api-key' => $this->apiKey,
                 'anthropic-version' => '2023-06-01',
                 'Content-Type' => 'application/json'
-            ])->post('https://api.anthropic.com/v1/messages', $payload);
+            ])->timeout($this->timeout)->post('https://api.anthropic.com/v1/messages', $payload);
 
             if ($response->successful()) {
                 $data = $response->json();
