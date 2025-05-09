@@ -73,6 +73,8 @@ class OllamaProvider extends AbstractProvider
         if ($response->failed()) {
             throw new Exception('Failed to get response from Ollama: ' . $response->body());
         }
+
+        Log::debug('Response: ' . $response->body());
         
         return $response->json('message.content') ?? '';
         
