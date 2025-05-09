@@ -99,7 +99,7 @@ class AIService extends Manager
     */
     public function creativityLevel(AICreativity $level)
     {
-        $this->creativity = $level * 0.1;
+        $this->creativity = $level->value * 0.1;
         return $this;
     }
     
