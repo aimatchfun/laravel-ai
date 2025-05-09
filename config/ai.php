@@ -11,7 +11,7 @@ return [
     | "anthropic", and others as implemented.
     |
     */
-    'default' => env('AI_PROVIDER', 'ollama'),
+    'default_provider' => env('AI_PROVIDER', 'ollama'),
 
     /*
     |--------------------------------------------------------------------------

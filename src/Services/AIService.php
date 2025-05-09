@@ -5,6 +5,7 @@ namespace AIMatchFun\LaravelAI\Services;
 use Illuminate\Support\Manager;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use AIMatchFun\LaravelAI\Services\AICreativity;
 
@@ -52,7 +53,7 @@ class AIService extends Manager
      */
     public function getDefaultDriver()
     {
-        return $this->config->get('ai.default', 'ollama');
+        return $this->config->get('ai.default_provider', 'ollama');
     }
 
     /**
@@ -138,9 +139,9 @@ class AIService extends Manager
                 if ($this->conversationId === null) {
                     $last = DB::connection($this->conversationHistoryConnection)
                         ->table('laravelai_conversation_histories')
-                        ->orderByDesc('conversation_id')
+                        ->orderByDesc('created_at')
                         ->first();
-                    $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+                    $this->conversationId = $last ? (string) Str::uuid() : (string) Str::uuid();
                 }
                 foreach ($this->userMessages as $msg) {
                     $this->persistMessageToHistory($msg['role'], $msg['content']);
@@ -149,9 +150,9 @@ class AIService extends Manager
             } else {
                 if ($this->conversationId === null) {
                     $last = DB::table('laravelai_conversation_histories')
-                        ->orderByDesc('conversation_id')
+                        ->orderByDesc('created_at')
                         ->first();
-                    $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+                    $this->conversationId = $last ? (string) Str::uuid() : (string) Str::uuid();
                 }
                 foreach ($this->userMessages as $msg) {
                     $this->persistMessageToHistory($msg['role'], $msg['content']);
