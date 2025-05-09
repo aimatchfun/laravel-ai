@@ -97,12 +97,9 @@ class AIService extends Manager
     * @param float|AICreativity $level
     * @return $this
     */
-    public function creativityLevel(float|AICreativity $level)
+    public function creativityLevel(AICreativity $level)
     {
-        if ($level instanceof AICreativity) {
-            $level = $level->value;
-        }
-        $this->creativity = $level;
+        $this->creativity = $level * 0.1;
         return $this;
     }
     

@@ -2,11 +2,11 @@
 
 namespace AIMatchFun\LaravelAI\Services;
 
-enum AICreativity: float
+enum AICreativity: int
 {
-    case LOW = 0.2;
-    case MEDIUM = 0.5;
-    case HIGH = 0.8;
-    case VERY_HIGH = 1.0;
-    case EXTREME = 1.5;
+    case LOW = 2;
+    case MEDIUM = 5;
+    case HIGH = 8;
+    case VERY_HIGH = 10;
+    case EXTREME = 15;
 } 
