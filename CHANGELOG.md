@@ -5,9 +5,9 @@
 ### Added
 - Suporte a múltiplos provedores de IA: Ollama, OpenAI, Anthropic.
 - Interface fluente via Facade `AI` para prompts, modelos, instruções de sistema e criatividade.
-- Métodos `withPrompt`, `withPrompts`, `creativityLevel`, `withSystemInstruction`, `provider`, `model` e `run`.
+- Métodos `prompt`, `prompts`, `creativityLevel`, `systemInstruction`, `provider`, `model` e `run`.
 - Enum `AICreativity` para níveis de criatividade (`LOW`, `MEDIUM`, `HIGH`).
-- Persistência de histórico de conversas em banco de dados com `withConversationHistory`, usando a tabela `laravelai_conversation_histories`.
+- Persistência de histórico de conversas em banco de dados com `conversationHistory`, usando a tabela `laravelai_conversation_histories`.
 - O método `run` retorna um objeto estruturado (`AIResponse`) com `conversation_id` e `answer`.
 - Exemplo de extensão para provedores customizados.
 

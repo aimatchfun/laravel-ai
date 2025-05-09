@@ -34,7 +34,7 @@ Or directly in `config/ai.php`:
 'conversation_history_enabled' => true,
 ```
 
-If conversation history is disabled, you do **not** need to run the migrations and no data will be stored in the database, even if you use the `withConversationHistory` method.
+If conversation history is disabled, you do **not** need to run the migrations and no data will be stored in the database, even if you use the `conversationHistory` method.
 
 ### Run the migrations
 
@@ -103,7 +103,7 @@ The package provides a fluent interface through the `AI` facade:
 use AIMatchFun\LaravelAI\Facades\AI;
 
 // Basic usage with default provider
-$response = AI::withPrompt('What is Laravel?')
+$response = AI::prompt('What is Laravel?')
     ->run();
 
 // $response is an object with:
@@ -112,42 +112,42 @@ $response = AI::withPrompt('What is Laravel?')
 
 // Specify a provider
 $response = AI::provider('ollama')
-    ->withPrompt('What is Laravel?')
+    ->prompt('What is Laravel?')
     ->run();
 
 // Specify a model
 $response = AI::provider('ollama')
     ->model('llama3')
-    ->withPrompt('What is Laravel?')
+    ->prompt('What is Laravel?')
     ->run();
 
 // With system instruction
 $response = AI::provider('ollama')
     ->model('llama3')
-    ->withSystemInstruction('You are a helpful AI assistant.')
-    ->withPrompt('What is Laravel?')
+    ->systemInstruction('You are a helpful AI assistant.')
+    ->prompt('What is Laravel?')
     ->run();
 
 // Using conversation history (persisted in the database)
 $response = AI::provider('ollama')
     ->model('llama3')
-    ->withConversationHistory('mysql') // Use your Laravel connection name
-    ->withPrompt('What is Laravel?')
+    ->conversationHistory('mysql') // Use your Laravel connection name
+    ->prompt('What is Laravel?')
     ->run();
 
 // Adjust creativity level (temperature)
 $response = AI::provider('ollama')
     ->model('llama3')
-    ->withPrompt('Write a poem about Laravel.')
+    ->prompt('Write a poem about Laravel.')
     ->creativityLevel(AICreativity::HIGH)
     ->run();
 
 // Continue a conversation using the returned conversation_id
-$response = AI::withPrompt('Hello, who are you?')->run();
+$response = AI::prompt('Hello, who are you?')->run();
 $conversationId = $response->conversation_id;
 
-$response = AI::withPrompt('And what can you do?')
-    ->withConversationHistory($conversationId)
+$response = AI::prompt('And what can you do?')
+    ->conversationHistory($conversationId)
     ->run();
 ```
 
@@ -156,7 +156,7 @@ $response = AI::withPrompt('And what can you do?')
 The `run()` method returns an instance of `AIResponse`:
 
 ```php
-$response = AI::withPrompt('What is Laravel?')->run();
+$response = AI::prompt('What is Laravel?')->run();
 
 $conversationId = $response->conversation_id; // int
 $answer = $response->answer; // string
@@ -169,23 +169,23 @@ $answer = $response->answer; // string
 
 > **Note:** Conversation history will only be persisted if `conversation_history_enabled` is set to `true` in your configuration or `.env` file.
 
-The `withConversationHistory` method uses the database connection specified in your configuration file (`config/ai.php`). For example, if you use `withConversationHistory('mysql')`, the conversation will be persisted using the `mysql` connection defined in your Laravel project.
+The `conversationHistory` method uses the database connection specified in your configuration file (`config/ai.php`). For example, if you use `conversationHistory('mysql')`, the conversation will be persisted using the `mysql` connection defined in your Laravel project.
 
-- If you **do not** use the `withConversationHistory` method, each call to the `run()` method will start a new conversation and a new `conversation_id` will be returned.
-- If you use the `withConversationHistory` method, the conversation will be continued and messages will be grouped by the same `conversation_id`.
+- If you **do not** use the `conversationHistory` method, each call to the `run()` method will start a new conversation and a new `conversation_id` will be returned.
+- If you use the `conversationHistory` method, the conversation will be continued and messages will be grouped by the same `conversation_id`.
 
-You can use the returned `conversation_id` to continue the conversation in future calls by passing it to the `withConversationHistory($conversationId)` method.
+You can use the returned `conversation_id` to continue the conversation in future calls by passing it to the `conversationHistory($conversationId)` method.
 
 Example:
 
 ```php
 // Start a new conversation and get the conversation_id
-$response = AI::withPrompt('Hello, who are you?')->run();
+$response = AI::prompt('Hello, who are you?')->run();
 $conversationId = $response->conversation_id;
 
 // Continue the conversation using the same conversation_id
-$response = AI::withPrompt('And what can you do?')
-    ->withConversationHistory($conversationId)
+$response = AI::prompt('And what can you do?')
+    ->conversationHistory($conversationId)
     ->run();
 ```
 

@@ -85,7 +85,7 @@ class AIService extends Manager
     * @param string $instruction
     * @return $this
     */
-    public function withSystemInstruction(string $instruction)
+    public function systemInstruction(string $instruction)
     {
         $this->systemInstruction = $instruction;
         return $this;
@@ -124,7 +124,7 @@ class AIService extends Manager
         }
 
         if (empty($this->userMessages)) {
-            throw new InvalidArgumentException('No user messages provided. Call withPrompt() before calling run().');
+            throw new InvalidArgumentException('No user messages provided. Call prompt() before calling run().');
         }
         
         $provider->setUserMessages($this->userMessages);
@@ -220,7 +220,7 @@ class AIService extends Manager
     * @param string $prompt
     * @return $this
     */
-    public function withPrompt(string $prompt)
+    public function prompt(string $prompt)
     {
         $this->userMessages = [['role' => 'user', 'content' => $prompt]];
         return $this;
@@ -243,7 +243,7 @@ class AIService extends Manager
     * @param string|null $connection Nome da conexão do Laravel a ser usada para persistência.
     * @return $this
     */
-    public function withConversationHistory(string $conversationId)
+    public function conversationHistory(string $conversationId)
     {
         if ($this->config->get('ai.conversation_history.enabled') === false) {
             return $this;
