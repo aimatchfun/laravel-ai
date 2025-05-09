@@ -134,34 +134,31 @@ class AIService extends Manager
         // Check if history is enabled
         $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
         if ($historyEnabled) {
-            try {
-                if ($this->conversationHistoryConnection) {
-                    if ($this->conversationId === null) {
-                        $last = DB::connection($this->conversationHistoryConnection)
-                            ->table('laravelai_conversation_histories')
-                            ->orderByDesc('conversation_id')
-                            ->first();
-                        $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
-                    }
-                    foreach ($this->userMessages as $msg) {
-                        $this->persistMessageToHistory($msg['role'], $msg['content']);
-                    }
-                    $this->persistMessageToHistory('assistant', $response);
-                } else {
-                    if ($this->conversationId === null) {
-                        $last = DB::table('laravelai_conversation_histories')
-                            ->orderByDesc('conversation_id')
-                            ->first();
-                        $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
-                    }
-                    foreach ($this->userMessages as $msg) {
-                        $this->persistMessageToHistory($msg['role'], $msg['content']);
-                    }
-                    $this->persistMessageToHistory('assistant', $response);
+            if ($this->conversationHistoryConnection) {
+                if ($this->conversationId === null) {
+                    $last = DB::connection($this->conversationHistoryConnection)
+                        ->table('laravelai_conversation_histories')
+                        ->orderByDesc('conversation_id')
+                        ->first();
+                    $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
                 }
-            } catch (\Illuminate\Database\QueryException $e) {
-                // Se a tabela não existir, apenas ignore o histórico
+                foreach ($this->userMessages as $msg) {
+                    $this->persistMessageToHistory($msg['role'], $msg['content']);
+                }
+                $this->persistMessageToHistory('assistant', $response);
+            } else {
+                if ($this->conversationId === null) {
+                    $last = DB::table('laravelai_conversation_histories')
+                        ->orderByDesc('conversation_id')
+                        ->first();
+                    $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+                }
+                foreach ($this->userMessages as $msg) {
+                    $this->persistMessageToHistory($msg['role'], $msg['content']);
+                }
+                $this->persistMessageToHistory('assistant', $response);
             }
+
         }
         
         return $response;
