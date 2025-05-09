@@ -27,14 +27,14 @@ class OllamaProvider extends AbstractProvider
     * Create a new Ollama provider instance.
     *
     * @param string $baseUrl
-    * @param string $defaultModel
+    * @param string $model
     * @param int $timeout
     * @return void
     */
-    public function __construct(string $baseUrl, string $defaultModel, int $timeout = 30)
+    public function __construct(string $baseUrl, string $model, int $timeout = 30)
     {
         $this->baseUrl = $baseUrl;
-        $this->model = $defaultModel;
+        $this->model = $model;
         $this->timeout = $timeout;
     }
     
@@ -47,7 +47,7 @@ class OllamaProvider extends AbstractProvider
     public function generateResponse()
     {
         $payload = [
-            'model' => $this->model,
+            'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
             'temperature' => $this->creativityLevel,
             'stream' => false,
         ];
@@ -65,7 +65,8 @@ class OllamaProvider extends AbstractProvider
         
         $payload['messages'] = $messages;
 
-        Log::debug('Ollama request payload: ' . json_encode($payload));
+        Log::debug('Model: ' . $this->model);
+        Log::debug('Creativity: ' . $this->creativityLevel);
         
         $response = Http::timeout($this->timeout)->post(rtrim($this->baseUrl, '/') . '/api/chat', $payload);
         

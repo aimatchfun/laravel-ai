@@ -13,12 +13,12 @@ class AIService extends Manager
     /**
     * @var string|null
     */
-    protected $selectedProvider = null;
+    protected $provider = null;
     
     /**
     * @var string|null
     */
-    protected $selectedModel = null;
+    protected $model = null;
     
     /**
     * @var string|null
@@ -63,7 +63,7 @@ class AIService extends Manager
     */
     public function provider(string $provider)
     {
-        $this->selectedProvider = $provider;
+        $this->provider = $provider;
         return $this;
     }
     
@@ -75,7 +75,8 @@ class AIService extends Manager
     */
     public function model(string $model)
     {
-        $this->selectedModel = $model;
+        $this->model = $model;
+
         return $this;
     }
     
@@ -88,6 +89,7 @@ class AIService extends Manager
     public function systemInstruction(string $instruction)
     {
         $this->systemInstruction = $instruction;
+
         return $this;
     }
     
@@ -111,10 +113,10 @@ class AIService extends Manager
     */
     public function answer()
     {
-        $provider = $this->driver($this->selectedProvider ?: $this->getDefaultDriver());
+        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
         
-        if ($this->selectedModel) {
-            $provider->setModel($this->selectedModel);
+        if ($this->model) {
+            $provider->setModel($this->model);
         }
         
         if ($this->systemInstruction) {
@@ -289,8 +291,8 @@ class AIService extends Manager
         ->table('laravelai_conversation_histories')
         ->insert([
             'conversation_id' => $this->conversationId,
-            'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
-            'model' => $this->selectedModel,
+            'provider' => $this->provider ?: $this->getDefaultDriver(),
+            'model' => $this->model,
             'role' => $role,
             'content' => $content,
             'created_at' => now(),
