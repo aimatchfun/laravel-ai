@@ -7,7 +7,7 @@ A Laravel package that provides a fluent interface for interacting with AI provi
 You can install the package via composer:
 
 ```bash
-composer require AIMatchFun/laravel-ai
+composer require aimatchfun/laravel-ai
 ```
 
 The package will automatically register itself.
