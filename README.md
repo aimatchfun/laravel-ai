@@ -7,7 +7,7 @@ A Laravel package that provides a fluent interface for interacting with AI provi
 You can install the package via composer:
 
 ```bash
-composer require daavelar/laravel-ai
+composer require AIMatchFun/laravel-ai
 ```
 
 The package will automatically register itself.
@@ -15,7 +15,7 @@ The package will automatically register itself.
 You can publish the configuration file with:
 
 ```bash
-php artisan vendor:publish --provider="Daavelar\LaravelAI\Providers\AIServiceProvider" --tag="config"
+php artisan vendor:publish --provider="AIMatchFun\LaravelAI\Providers\AIServiceProvider" --tag="config"
 ```
 
 This will publish a `config/ai.php` file where you can configure your AI providers.
@@ -66,7 +66,7 @@ ANTHROPIC_DEFAULT_MODEL=claude-3-opus-20240229
 The package provides a fluent interface through the `AI` facade:
 
 ```php
-use Daavelar\LaravelAI\Facades\AI;
+use AIMatchFun\LaravelAI\Facades\AI;
 
 // Basic usage with default provider
 $response = AI::withPrompt('What is Laravel?')
@@ -148,7 +148,7 @@ You can use the `conversation_id` to fetch or display the full conversation hist
 You can add your own AI providers by extending the `AIService` class in a service provider:
 
 ```php
-use Daavelar\LaravelAI\Services\AIService;
+use AIMatchFun\LaravelAI\Services\AIService;
 use App\Services\AI\CustomProvider;
 
 public function boot()
@@ -166,7 +166,7 @@ public function boot()
 }
 ```
 
-Your custom provider needs to implement the `Daavelar\LaravelAI\Contracts\AIProvider` interface or extend the `Daavelar\LaravelAI\Services\Providers\AbstractProvider` class.
+Your custom provider needs to implement the `AIMatchFun\LaravelAI\Contracts\AIProvider` interface or extend the `AIMatchFun\LaravelAI\Services\Providers\AbstractProvider` class.
 
 ## License
 
