@@ -20,6 +20,16 @@ php artisan vendor:publish --provider="AIMatchFun\LaravelAI\Providers\AIServiceP
 
 This will publish a `config/ai.php` file where you can configure your AI providers.
 
+### Run the migration
+
+If you want to use conversation history, you need to run the migration to create the necessary table:
+
+```bash
+php artisan migrate
+```
+
+This will create the `laravelai_conversation_histories` table in your database.
+
 ## Configuration
 
 After publishing the configuration file, you can configure your AI providers in the `config/ai.php` file:

@@ -4,6 +4,7 @@ namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\DB;
 
 use AIMatchFun\LaravelAI\Services\AICreativity;
 
@@ -132,7 +133,7 @@ class AIService extends Manager
         
         if ($this->conversationHistoryConnection) {
             if ($this->conversationId === null) {
-                $last = \DB::connection($this->conversationHistoryConnection)
+                $last = DB::connection($this->conversationHistoryConnection)
                     ->table('laravelai_conversation_histories')
                     ->orderByDesc('conversation_id')
                     ->first();
@@ -144,7 +145,7 @@ class AIService extends Manager
             $this->persistMessageToHistory('assistant', $response);
         } else {
             if ($this->conversationId === null) {
-                $last = \DB::table('laravelai_conversation_histories')
+                $last = DB::table('laravelai_conversation_histories')
                     ->orderByDesc('conversation_id')
                     ->first();
                 $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
@@ -255,7 +256,7 @@ class AIService extends Manager
     {
         $this->conversationHistoryConnection = $connection;
         if ($connection) {
-            $history = \DB::connection($connection)
+            $history = DB::connection($connection)
                 ->table('ai_conversation_histories')
                 ->where('provider', $this->selectedProvider ?: $this->getDefaultDriver())
                 ->where('model', $this->selectedModel)
@@ -284,8 +285,8 @@ class AIService extends Manager
     {
         $connection = $this->conversationHistoryConnection ?: null;
         $query = $connection
-            ? \DB::connection($connection)->table('laravelai_conversation_histories')
-            : \DB::table('laravelai_conversation_histories');
+            ? DB::connection($connection)->table('laravelai_conversation_histories')
+            : DB::table('laravelai_conversation_histories');
         $query->insert([
             'conversation_id' => $this->conversationId,
             'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
