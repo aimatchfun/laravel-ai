@@ -136,11 +136,11 @@ class AIService extends Manager
         if (!$historyEnabled) {
             return $response;
         }
-
+        
         if (!$this->conversationHistoryConnection) {
             throw new InvalidConversationHistoryException('Conversation history connection not set');
         }
-
+        
         foreach ($this->userMessages as $msg) {
             $this->persistMessageToHistory($msg['role'], $msg['content']);
         }
@@ -276,27 +276,21 @@ class AIService extends Manager
     */
     protected function persistMessageToHistory(string $role, string $content)
     {
-        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
-        if (!$historyEnabled) {
+        if ($this->config->get('ai.conversation_history.enabled') === false) {
             return;
         }
-        try {
-            $connection = $this->conversationHistoryConnection ?: null;
-            $query = $connection
-            ? DB::connection($connection)->table('laravelai_conversation_histories')
-            : DB::table('laravelai_conversation_histories');
-            $query->insert([
-                'conversation_id' => $this->conversationId,
-                'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
-                'model' => $this->selectedModel,
-                'role' => $role,
-                'content' => $content,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            // Se a tabela não existir, apenas ignore
-        }
+        
+        return DB::connection(config('ai.conversation_history.connection'))
+        ->table('laravelai_conversation_histories')
+        ->insert([
+            'conversation_id' => $this->conversationId,
+            'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
+            'model' => $this->selectedModel,
+            'role' => $role,
+            'content' => $content,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
     
     /**
