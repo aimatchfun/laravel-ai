@@ -137,11 +137,7 @@ class AIService extends Manager
         if ($historyEnabled) {
             if ($this->conversationHistoryConnection) {
                 if ($this->conversationId === null) {
-                    $last = DB::connection($this->conversationHistoryConnection)
-                        ->table('laravelai_conversation_histories')
-                        ->orderByDesc('created_at')
-                        ->first();
-                    $this->conversationId = $last ? (string) Str::uuid() : (string) Str::uuid();
+                    return $response;
                 }
                 foreach ($this->userMessages as $msg) {
                     $this->persistMessageToHistory($msg['role'], $msg['content']);
@@ -149,17 +145,13 @@ class AIService extends Manager
                 $this->persistMessageToHistory('assistant', $response);
             } else {
                 if ($this->conversationId === null) {
-                    $last = DB::table('laravelai_conversation_histories')
-                        ->orderByDesc('created_at')
-                        ->first();
-                    $this->conversationId = $last ? (string) Str::uuid() : (string) Str::uuid();
+                    return $response;
                 }
                 foreach ($this->userMessages as $msg) {
                     $this->persistMessageToHistory($msg['role'], $msg['content']);
                 }
                 $this->persistMessageToHistory('assistant', $response);
             }
-
         }
         
         return $response;
@@ -319,6 +311,18 @@ class AIService extends Manager
         } catch (\Illuminate\Database\QueryException $e) {
             // Se a tabela não existir, apenas ignore
         }
+    }
+
+    /**
+     * Define o conversation_id manualmente para persistência de histórico.
+     *
+     * @param string $id
+     * @return $this
+     */
+    public function setConversationId(string $id)
+    {
+        $this->conversationId = $id;
+        return $this;
     }
 }
 

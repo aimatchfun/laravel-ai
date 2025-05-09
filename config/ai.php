@@ -23,6 +23,7 @@ return [
     |
     */
     'conversation_history_enabled' => env('AI_CONVERSATION_HISTORY_ENABLED', false),
+    'conversation_history_connection' => env('AI_CONVERSATION_HISTORY_CONNECTION', null),
 
     /*
     |--------------------------------------------------------------------------
