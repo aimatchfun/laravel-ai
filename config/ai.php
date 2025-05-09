@@ -15,6 +15,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Conversation History
+    |--------------------------------------------------------------------------
+    |
+    | Enable or disable conversation history persistence. If false, the package
+    | will not attempt to read or write conversation history to the database.
+    |
+    */
+    'conversation_history_enabled' => env('AI_CONVERSATION_HISTORY_ENABLED', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | AI Providers Configuration
     |--------------------------------------------------------------------------
     |

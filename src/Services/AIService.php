@@ -131,29 +131,37 @@ class AIService extends Manager
         
         $response = $provider->generateResponse();
         
-        if ($this->conversationHistoryConnection) {
-            if ($this->conversationId === null) {
-                $last = DB::connection($this->conversationHistoryConnection)
-                    ->table('laravelai_conversation_histories')
-                    ->orderByDesc('conversation_id')
-                    ->first();
-                $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+        // Check if history is enabled
+        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
+        if ($historyEnabled) {
+            try {
+                if ($this->conversationHistoryConnection) {
+                    if ($this->conversationId === null) {
+                        $last = DB::connection($this->conversationHistoryConnection)
+                            ->table('laravelai_conversation_histories')
+                            ->orderByDesc('conversation_id')
+                            ->first();
+                        $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+                    }
+                    foreach ($this->userMessages as $msg) {
+                        $this->persistMessageToHistory($msg['role'], $msg['content']);
+                    }
+                    $this->persistMessageToHistory('assistant', $response);
+                } else {
+                    if ($this->conversationId === null) {
+                        $last = DB::table('laravelai_conversation_histories')
+                            ->orderByDesc('conversation_id')
+                            ->first();
+                        $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
+                    }
+                    foreach ($this->userMessages as $msg) {
+                        $this->persistMessageToHistory($msg['role'], $msg['content']);
+                    }
+                    $this->persistMessageToHistory('assistant', $response);
+                }
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Se a tabela não existir, apenas ignore o histórico
             }
-            foreach ($this->userMessages as $msg) {
-                $this->persistMessageToHistory($msg['role'], $msg['content']);
-            }
-            $this->persistMessageToHistory('assistant', $response);
-        } else {
-            if ($this->conversationId === null) {
-                $last = DB::table('laravelai_conversation_histories')
-                    ->orderByDesc('conversation_id')
-                    ->first();
-                $this->conversationId = $last ? (string)($last->conversation_id + 1) : '1';
-            }
-            foreach ($this->userMessages as $msg) {
-                $this->persistMessageToHistory($msg['role'], $msg['content']);
-            }
-            $this->persistMessageToHistory('assistant', $response);
         }
         
         return $response;
@@ -254,20 +262,26 @@ class AIService extends Manager
      */
     public function withConversationHistory(?string $connection = null)
     {
-        $this->conversationHistoryConnection = $connection;
-        if ($connection) {
-            $history = DB::connection($connection)
-                ->table('ai_conversation_histories')
-                ->where('provider', $this->selectedProvider ?: $this->getDefaultDriver())
-                ->where('model', $this->selectedModel)
-                ->orderBy('created_at')
-                ->get();
-            $this->userMessages = $history->map(function ($row) {
-                return [
-                    'role' => $row->role,
-                    'content' => $row->content,
-                ];
-            })->toArray();
+        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
+        $this->conversationHistoryConnection = $historyEnabled ? $connection : null;
+        if ($historyEnabled && $connection) {
+            try {
+                $history = DB::connection($connection)
+                    ->table('laravelai_conversation_histories')
+                    ->where('provider', $this->selectedProvider ?: $this->getDefaultDriver())
+                    ->where('model', $this->selectedModel)
+                    ->orderBy('created_at')
+                    ->get();
+                $this->userMessages = $history->map(function ($row) {
+                    return [
+                        'role' => $row->role,
+                        'content' => $row->content,
+                    ];
+                })->toArray();
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Se a tabela não existir, não carrega histórico
+                $this->userMessages = [];
+            }
         } else {
             $this->userMessages = [];
         }
@@ -283,19 +297,27 @@ class AIService extends Manager
      */
     protected function persistMessageToHistory(string $role, string $content)
     {
-        $connection = $this->conversationHistoryConnection ?: null;
-        $query = $connection
-            ? DB::connection($connection)->table('laravelai_conversation_histories')
-            : DB::table('laravelai_conversation_histories');
-        $query->insert([
-            'conversation_id' => $this->conversationId,
-            'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
-            'model' => $this->selectedModel,
-            'role' => $role,
-            'content' => $content,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
+        if (!$historyEnabled) {
+            return;
+        }
+        try {
+            $connection = $this->conversationHistoryConnection ?: null;
+            $query = $connection
+                ? DB::connection($connection)->table('laravelai_conversation_histories')
+                : DB::table('laravelai_conversation_histories');
+            $query->insert([
+                'conversation_id' => $this->conversationId,
+                'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
+                'model' => $this->selectedModel,
+                'role' => $role,
+                'content' => $content,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Se a tabela não existir, apenas ignore
+        }
     }
 }
 
