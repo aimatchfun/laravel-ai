@@ -12,92 +12,92 @@ use AIMatchFun\LaravelAI\Services\AICreativity;
 class AIService extends Manager
 {
     /**
-     * @var string|null
-     */
+    * @var string|null
+    */
     protected $selectedProvider = null;
-
+    
     /**
-     * @var string|null
-     */
+    * @var string|null
+    */
     protected $selectedModel = null;
-
+    
     /**
-     * @var string|null
-     */
+    * @var string|null
+    */
     protected $systemInstruction = null;
-
+    
     /**
-     * @var array
-     */
+    * @var array
+    */
     protected $userMessages = [];
-
+    
     /**
-     * @var float
-     */
+    * @var float
+    */
     protected $creativity = 1.0;
-
+    
     /**
-     * @var string|null
-     */
+    * @var string|null
+    */
     protected $conversationHistoryConnection = null;
-
+    
     /**
-     * @var string|null
-     */
+    * @var string|null
+    */
     protected $conversationId = null;
-
+    
     /**
-     * Get the default AI provider name.
-     *
-     * @return string
-     */
+    * Get the default AI provider name.
+    *
+    * @return string
+    */
     public function getDefaultDriver()
     {
         return $this->config->get('ai.default_provider', 'ollama');
     }
-
+    
     /**
-     * Set the AI provider to use.
-     *
-     * @param string $provider
-     * @return $this
-     */
+    * Set the AI provider to use.
+    *
+    * @param string $provider
+    * @return $this
+    */
     public function provider(string $provider)
     {
         $this->selectedProvider = $provider;
         return $this;
     }
-
+    
     /**
-     * Set the model to use.
-     *
-     * @param string $model
-     * @return $this
-     */
+    * Set the model to use.
+    *
+    * @param string $model
+    * @return $this
+    */
     public function model(string $model)
     {
         $this->selectedModel = $model;
         return $this;
     }
-
+    
     /**
-     * Set the system instruction.
-     *
-     * @param string $instruction
-     * @return $this
-     */
+    * Set the system instruction.
+    *
+    * @param string $instruction
+    * @return $this
+    */
     public function withSystemInstruction(string $instruction)
     {
         $this->systemInstruction = $instruction;
         return $this;
     }
-
+    
     /**
-     * Set the creativity level.
-     *
-     * @param float|AICreativity $level
-     * @return $this
-     */
+    * Set the creativity level.
+    *
+    * @param float|AICreativity $level
+    * @return $this
+    */
     public function creativityLevel(float|AICreativity $level)
     {
         if ($level instanceof AICreativity) {
@@ -106,12 +106,12 @@ class AIService extends Manager
         $this->creativity = $level;
         return $this;
     }
-
+    
     /**
-     * Get the answer from the AI.
-     *
-     * @return string
-     */
+    * Get the answer from the AI.
+    *
+    * @return string
+    */
     public function answer()
     {
         $provider = $this->driver($this->selectedProvider ?: $this->getDefaultDriver());
@@ -132,55 +132,47 @@ class AIService extends Manager
         
         $response = $provider->generateResponse();
         
-        // Check if history is enabled
-        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
-        if ($historyEnabled) {
-            if ($this->conversationHistoryConnection) {
-                if ($this->conversationId === null) {
-                    return $response;
-                }
-                foreach ($this->userMessages as $msg) {
-                    $this->persistMessageToHistory($msg['role'], $msg['content']);
-                }
-                $this->persistMessageToHistory('assistant', $response);
-            } else {
-                if ($this->conversationId === null) {
-                    return $response;
-                }
-                foreach ($this->userMessages as $msg) {
-                    $this->persistMessageToHistory($msg['role'], $msg['content']);
-                }
-                $this->persistMessageToHistory('assistant', $response);
-            }
+        $historyEnabled = $this->config->get('ai.conversation_history.enabled');
+        if (!$historyEnabled) {
+            return $response;
         }
+
+        if (!$this->conversationHistoryConnection) {
+            throw new InvalidConversationHistoryException('Conversation history connection not set');
+        }
+
+        foreach ($this->userMessages as $msg) {
+            $this->persistMessageToHistory($msg['role'], $msg['content']);
+        }
+        $this->persistMessageToHistory('assistant', $response);
         
         return $response;
     }
-
+    
     /**
-     * Create an instance of the specified driver.
-     *
-     * @param string $driver
-     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-     *
-     * @throws \InvalidArgumentException
-     */
+    * Create an instance of the specified driver.
+    *
+    * @param string $driver
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    *
+    * @throws \InvalidArgumentException
+    */
     protected function createDriver($driver)
     {
         $method = 'create'.ucfirst($driver).'Driver';
-
+        
         if (method_exists($this, $method)) {
             return $this->$method();
         }
-
+        
         throw new InvalidArgumentException("Driver [{$driver}] not supported.");
     }
-
+    
     /**
-     * Create the Ollama driver.
-     *
-     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-     */
+    * Create the Ollama driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
     protected function createOllamaDriver()
     {
         $config = $this->config->get('ai.providers.ollama', []);
@@ -191,12 +183,12 @@ class AIService extends Manager
             $config['timeout'] ?? 30
         );
     }
-
+    
     /**
-     * Create the OpenAI driver.
-     *
-     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-     */
+    * Create the OpenAI driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
     protected function createOpenaiDriver()
     {
         $config = $this->config->get('ai.providers.openai', []);
@@ -207,12 +199,12 @@ class AIService extends Manager
             $config['timeout'] ?? 30
         );
     }
-
+    
     /**
-     * Create the Anthropic driver.
-     *
-     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-     */
+    * Create the Anthropic driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
     protected function createAnthropicDriver()
     {
         $config = $this->config->get('ai.providers.anthropic', []);
@@ -223,71 +215,65 @@ class AIService extends Manager
             $config['timeout'] ?? 30
         );
     }
-
+    
     /**
-     * Define a mensagem do usuário (prompt principal).
-     *
-     * @param string $prompt
-     * @return $this
-     */
+    * Define a mensagem do usuário (prompt principal).
+    *
+    * @param string $prompt
+    * @return $this
+    */
     public function withPrompt(string $prompt)
     {
         $this->userMessages = [['role' => 'user', 'content' => $prompt]];
         return $this;
     }
-
+    
     /**
-     * Alias for answer to match README usage.
-     *
-     * @return AIResponse
-     */
+    * Alias for answer to match README usage.
+    *
+    * @return AIResponse
+    */
     public function run() : AIResponse
     {
         $response = $this->answer();
         return new AIResponse((string)$this->conversationId, $response);
     }
-
+    
     /**
-     * Habilita o uso de histórico de conversa, persistindo e buscando mensagens do banco.
-     *
-     * @param string|null $connection Nome da conexão do Laravel a ser usada para persistência.
-     * @return $this
-     */
-    public function withConversationHistory(?string $connection = null)
+    * Habilita o uso de histórico de conversa, persistindo e buscando mensagens do banco.
+    *
+    * @param string|null $connection Nome da conexão do Laravel a ser usada para persistência.
+    * @return $this
+    */
+    public function withConversationHistory(string $conversationId)
     {
-        $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
-        $this->conversationHistoryConnection = $historyEnabled ? $connection : null;
-        if ($historyEnabled && $connection) {
-            try {
-                $history = DB::connection($connection)
-                    ->table('laravelai_conversation_histories')
-                    ->where('provider', $this->selectedProvider ?: $this->getDefaultDriver())
-                    ->where('model', $this->selectedModel)
-                    ->orderBy('created_at')
-                    ->get();
-                $this->userMessages = $history->map(function ($row) {
-                    return [
-                        'role' => $row->role,
-                        'content' => $row->content,
-                    ];
-                })->toArray();
-            } catch (\Illuminate\Database\QueryException $e) {
-                // Se a tabela não existir, não carrega histórico
-                $this->userMessages = [];
-            }
-        } else {
-            $this->userMessages = [];
+        if ($this->config->get('ai.conversation_history.enabled') === false) {
+            return $this;
         }
+        
+        $history = DB::connection(config('ai.conversation_history.connection'))
+        ->table('laravelai_conversation_histories')
+        ->where('conversation_id', $conversationId)
+        ->orderBy('created_at')
+        ->get();
+        
+        $this->userMessages = $history->map(function ($row) {
+            return [
+                'role' => $row->role,
+                'content' => $row->content,
+            ];
+        })->toArray();
+        
         return $this;
     }
-
+    
     /**
-     * Persiste a mensagem no histórico, se a conexão estiver definida.
-     *
-     * @param string $role
-     * @param string $content
-     * @return void
-     */
+    * Persiste a mensagem no histórico, se a conexão estiver definida.
+    *
+    * @param string $role
+    * @param string $content
+    * @return void
+    */
     protected function persistMessageToHistory(string $role, string $content)
     {
         $historyEnabled = $this->config->get('ai.conversation_history_enabled', false);
@@ -297,8 +283,8 @@ class AIService extends Manager
         try {
             $connection = $this->conversationHistoryConnection ?: null;
             $query = $connection
-                ? DB::connection($connection)->table('laravelai_conversation_histories')
-                : DB::table('laravelai_conversation_histories');
+            ? DB::connection($connection)->table('laravelai_conversation_histories')
+            : DB::table('laravelai_conversation_histories');
             $query->insert([
                 'conversation_id' => $this->conversationId,
                 'provider' => $this->selectedProvider ?: $this->getDefaultDriver(),
@@ -312,13 +298,13 @@ class AIService extends Manager
             // Se a tabela não existir, apenas ignore
         }
     }
-
+    
     /**
-     * Define o conversation_id manualmente para persistência de histórico.
-     *
-     * @param string $id
-     * @return $this
-     */
+    * Define o conversation_id manualmente para persistência de histórico.
+    *
+    * @param string $id
+    * @return $this
+    */
     public function setConversationId(string $id)
     {
         $this->conversationId = $id;
