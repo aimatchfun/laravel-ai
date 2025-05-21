@@ -101,6 +101,7 @@ The package provides a fluent interface through the `AI` facade:
 
 ```php
 use AIMatchFun\LaravelAI\Facades\AI;
+use AIMatchFun\LaravelAI\Services\AICreativity;
 
 // Basic usage with default provider
 $response = AI::prompt('What is Laravel?')
