@@ -3,11 +3,11 @@
 namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
-use Illuminate\Support\Facades\DB;
 use AIMatchFun\LaravelAI\Contracts\AIProvider;
 use InvalidArgumentException;
 
 use AIMatchFun\LaravelAI\Services\AICreativity;
+use AIMatchFun\LaravelAI\Services\Message;
 
 class AIService extends Manager
 {
@@ -37,14 +37,9 @@ class AIService extends Manager
     protected $creativity = 1.0;
     
     /**
-    * @var string|null
+    * @var array
     */
-    protected $conversationHistoryConnection = null;
-    
-    /**
-    * @var string|null
-    */
-    protected $conversationId = null;
+    protected $previewMessages = [];
     
     /**
     * Get the default AI provider name.
@@ -128,22 +123,14 @@ class AIService extends Manager
             throw new InvalidArgumentException('No user messages provided. Call prompt() before calling run().');
         }
         
-        $provider->setUserMessages($this->userMessages);
+        // Merge preview messages with current user messages
+        $allMessages = array_merge($this->previewMessages, $this->userMessages);
+        
+        $provider->setUserMessages($allMessages);
         
         $provider->setCreativityLevel($this->creativity);
         
         $response = $provider->generateResponse();
-        
-        $historyEnabled = $this->config->get('ai.conversation_history.enabled');
-
-        if (!$historyEnabled) {
-            return $response;
-        }
-        
-        foreach ($this->userMessages as $msg) {
-            $this->persistMessageToHistory($msg['role'], $msg['content']);
-        }
-        $this->persistMessageToHistory('assistant', $response);
         
         return $response;
     }
@@ -251,82 +238,23 @@ class AIService extends Manager
     public function run() : AIResponse
     {
         $response = $this->answer();
-        return new AIResponse((string)$this->conversationId, $response);
+        return new AIResponse($response);
     }
     
     /**
-    * Habilita o uso de histórico de conversa, persistindo e buscando mensagens do banco.
+    * Define mensagens de preview para o contexto da conversa.
     *
-    * @param string|null $connection Nome da conexão do Laravel a ser usada para persistência.
+    * @param array $messages Array de mensagens no formato ['role' => 'user', 'content' => 'message'] ou array de objetos Message
     * @return $this
     */
-    public function conversationHistory(string $conversationId)
+    public function previewMessages(array $messages)
     {
-        if ($this->config->get('ai.conversation_history.enabled') === false) {
-            return $this;
-        }
+        $messageObjects = Message::fromArray($messages);
+        $this->previewMessages = Message::toArrayFormat($messageObjects);
         
-        $history = DB::connection(config('ai.conversation_history.connection'))
-            ->table('laravelai_conversation_histories')
-            ->where('conversation_id', $conversationId)
-            ->orderBy('created_at')
-            ->get();
+        return $this;
+    }
+    
 
-        $this->conversationId = $conversationId;
-        
-        $historyMessages = $history->map(function ($row) {
-            return [
-                'role' => $row->role,
-                'content' => $row->content,
-            ];
-        })->toArray();
-        
-        // Mescla as mensagens do histórico com as já presentes em userMessages
-        if (!empty($this->userMessages)) {
-            $this->userMessages = array_merge($historyMessages, $this->userMessages);
-        } else {
-            $this->userMessages = $historyMessages;
-        }
-        
-        return $this;
-    }
-    
-    /**
-    * Persiste a mensagem no histórico, se a conexão estiver definida.
-    *
-    * @param string $role
-    * @param string $content
-    * @return void
-    */
-    protected function persistMessageToHistory(string $role, string $content)
-    {
-        if ($this->config->get('ai.conversation_history.enabled') === false) {
-            return;
-        }
-        
-        return DB::connection(config('ai.conversation_history.connection'))
-            ->table('laravelai_conversation_histories')
-            ->insert([
-                'conversation_id' => $this->conversationId,
-                'provider' => $this->provider ?: $this->getDefaultDriver(),
-                'model' => $this->model,
-                'role' => $role,
-                'content' => $content,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-    }
-    
-    /**
-    * Define o conversation_id manualmente para persistência de histórico.
-    *
-    * @param string $id
-    * @return $this
-    */
-    public function setConversationId(string $id)
-    {
-        $this->conversationId = $id;
-        return $this;
-    }
 }
 

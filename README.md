@@ -20,31 +20,29 @@ php artisan vendor:publish --provider="AIMatchFun\LaravelAI\Providers\AIServiceP
 
 This will publish a `config/ai.php` file where you can configure your AI providers.
 
-### Conversation History Configuration
+### Preview Messages
 
-By default, conversation history is **disabled**. If you want to enable conversation history (persisting messages in the database), set the following in your `.env` file:
-
-```
-AI_CONVERSATION_HISTORY_ENABLED=true
-```
-
-Or directly in `config/ai.php`:
+The package now supports preview messages to provide context for conversations. You can pass an array of messages in the format that AI models expect:
 
 ```php
-'conversation_history_enabled' => true,
+$messages = [
+    ['role' => 'user', 'content' => 'Hello, how are you?'],
+    ['role' => 'assistant', 'content' => 'I am doing well, thank you!'],
+    ['role' => 'user', 'content' => 'What can you help me with?']
+];
 ```
 
-If conversation history is disabled, you do **not** need to run the migrations and no data will be stored in the database, even if you use the `conversationHistory` method.
+Or use the Message object for better type safety:
 
-### Run the migrations
+```php
+use AIMatchFun\LaravelAI\Services\Message;
 
-If you want to use conversation history, you need to run the migration to create the necessary table **and** enable the option as described above:
-
-```bash
-php artisan migrate
+$messages = [
+    Message::user('Hello, how are you?'),
+    Message::assistant('I am doing well, thank you!'),
+    Message::user('What can you help me with?')
+];
 ```
-
-This will create the `laravelai_conversation_histories` table in your database.
 
 ## Configuration
 
@@ -108,7 +106,7 @@ $response = AI::prompt('What is Laravel?')
     ->run();
 
 // $response is an object with:
-// $response->conversation_id (int)
+
 // $response->answer (string)
 
 // Specify a provider
@@ -129,10 +127,15 @@ $response = AI::provider('ollama')
     ->prompt('What is Laravel?')
     ->run();
 
-// Using conversation history (persisted in the database)
+// Using preview messages for context
+$messages = [
+    ['role' => 'user', 'content' => 'Hello, how are you?'],
+    ['role' => 'assistant', 'content' => 'I am doing well, thank you!']
+];
+
 $response = AI::provider('ollama')
     ->model('llama3')
-    ->conversationHistory('mysql') // Use your Laravel connection name
+    ->previewMessages($messages)
     ->prompt('What is Laravel?')
     ->run();
 
@@ -143,12 +146,16 @@ $response = AI::provider('ollama')
     ->creativityLevel(AICreativity::HIGH)
     ->run();
 
-// Continue a conversation using the returned conversation_id
+// Continue a conversation using preview messages
 $response = AI::prompt('Hello, who are you?')->run();
-$conversationId = $response->conversation_id;
+
+$messages = [
+    ['role' => 'user', 'content' => 'Hello, who are you?'],
+    ['role' => 'assistant', 'content' => $response->answer]
+];
 
 $response = AI::prompt('And what can you do?')
-    ->conversationHistory($conversationId)
+    ->previewMessages($messages)
     ->run();
 ```
 
@@ -159,36 +166,68 @@ The `run()` method returns an instance of `AIResponse`:
 ```php
 $response = AI::prompt('What is Laravel?')->run();
 
-$conversationId = $response->conversation_id; // int
 $answer = $response->answer; // string
 ```
 
-- `conversation_id`: The unique identifier for the conversation. Use this to continue a conversation or fetch its history.
 - `answer`: The AI's response to your prompt(s).
 
-### Conversation History
+### Preview Messages
 
-> **Note:** Conversation history will only be persisted if `conversation_history_enabled` is set to `true` in your configuration or `.env` file.
+The `previewMessages` method allows you to provide context for your AI conversations by passing an array of previous messages. This is useful for maintaining conversation context without persisting data to a database.
 
-The `conversationHistory` method uses the database connection specified in your configuration file (`config/ai.php`). For example, if you use `conversationHistory('mysql')`, the conversation will be persisted using the `mysql` connection defined in your Laravel project.
-
-- If you **do not** use the `conversationHistory` method, each call to the `run()` method will start a new conversation and a new `conversation_id` will be returned.
-- If you use the `conversationHistory` method, the conversation will be continued and messages will be grouped by the same `conversation_id`.
-
-You can use the returned `conversation_id` to continue the conversation in future calls by passing it to the `conversationHistory($conversationId)` method.
+- Messages should be in the format `['role' => 'user|assistant|system', 'content' => 'message content']`
+- You can also use the `Message` object for better type safety and validation
+- Preview messages are merged with the current prompt before sending to the AI provider
 
 Example:
 
 ```php
-// Start a new conversation and get the conversation_id
-$response = AI::prompt('Hello, who are you?')->run();
-$conversationId = $response->conversation_id;
+// Using array format
+$messages = [
+    ['role' => 'user', 'content' => 'Hello, who are you?'],
+    ['role' => 'assistant', 'content' => 'I am an AI assistant.']
+];
 
-// Continue the conversation using the same conversation_id
-$response = AI::prompt('And what can you do?')
-    ->conversationHistory($conversationId)
+$response = AI::previewMessages($messages)
+    ->prompt('What can you help me with?')
+    ->run();
+
+// Using Message objects
+use AIMatchFun\LaravelAI\Services\Message;
+
+$messages = [
+    Message::user('Hello, who are you?'),
+    Message::assistant('I am an AI assistant.')
+];
+
+$response = AI::previewMessages($messages)
+    ->prompt('What can you help me with?')
     ->run();
 ```
+
+## Available Models
+
+### Novita Models
+
+The package provides an enum with all available Novita models for easy access and type safety:
+
+```php
+use AIMatchFun\LaravelAI\Enums\NovitaModel;
+
+// Use a specific model
+$response = AI::provider('novita')
+    ->model(NovitaModel::ERNIE_4_5_0_3B->value)
+    ->prompt('What is Laravel?')
+    ->run();
+
+// Get all available models
+$allModels = NovitaModel::getValues();
+
+// Find a model by value
+$model = NovitaModel::fromValue('baidu/ernie-4.5-0.3b');
+```
+
+**Note:** The list of available models in the enum may become outdated as Novita adds or removes models. Always check the [official Novita documentation](https://novita.ai/) for the most current list of available models.
 
 ## Extending
 

@@ -13,20 +13,7 @@ return [
     */
     'default_provider' => env('AI_PROVIDER', 'ollama'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Conversation History
-    |--------------------------------------------------------------------------
-    |
-    | Enable or disable conversation history persistence. If false, the package
-    | will not attempt to read or write conversation history to the database.
-    |
-    */
-    'conversation_history' => [
-        'enabled' => env('AI_CONVERSATION_HISTORY_ENABLED', false),
 
-        'connection' => env('AI_CONVERSATION_HISTORY_DB_CONNECTION', null),
-    ],
 
     /*
     |--------------------------------------------------------------------------
