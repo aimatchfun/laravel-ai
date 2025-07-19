@@ -59,20 +59,20 @@ class NovitaProvider extends AbstractProvider
         ];
 
         $messages = [];
-        
+
         if ($this->systemInstruction) {
             $messages[] = [
                 'role' => 'system',
                 'content' => $this->systemInstruction
             ];
         }
-        
+
         if (!empty($this->userMessages)) {
             $messages = array_merge($messages, $this->userMessages);
         } else {
             throw new Exception('No user messages provided.');
         }
-        
+
         $payload['messages'] = $messages;
 
         $response = Http::withHeaders([

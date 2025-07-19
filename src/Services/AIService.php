@@ -4,10 +4,9 @@ namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
 use AIMatchFun\LaravelAI\Contracts\AIProvider;
-use InvalidArgumentException;
-
 use AIMatchFun\LaravelAI\Services\AICreativity;
 use AIMatchFun\LaravelAI\Services\Message;
+use InvalidArgumentException;
 
 class AIService extends Manager
 {
@@ -15,32 +14,32 @@ class AIService extends Manager
     * @var string|null
     */
     protected $provider = null;
-    
+
     /**
     * @var string|null
     */
     protected $model = null;
-    
+
     /**
     * @var string|null
     */
     protected $systemInstruction = null;
-    
+
     /**
     * @var array
     */
     protected $userMessages = [];
-    
+
     /**
     * @var float
     */
     protected $creativity = 1.0;
-    
+
     /**
     * @var array
     */
     protected $previewMessages = [];
-    
+
     /**
     * Get the default AI provider name.
     *
@@ -50,7 +49,7 @@ class AIService extends Manager
     {
         return $this->config->get('ai.default_provider', 'ollama');
     }
-    
+
     /**
     * Set the AI provider to use.
     *
@@ -62,7 +61,7 @@ class AIService extends Manager
         $this->provider = $provider;
         return $this;
     }
-    
+
     /**
     * Set the model to use.
     *
@@ -75,7 +74,7 @@ class AIService extends Manager
 
         return $this;
     }
-    
+
     /**
     * Set the system instruction.
     *
@@ -88,7 +87,7 @@ class AIService extends Manager
 
         return $this;
     }
-    
+
     /**
     * Set the creativity level.
     *
@@ -98,10 +97,10 @@ class AIService extends Manager
     public function creativityLevel(AICreativity $level)
     {
         $this->creativity = $level->value * 0.1;
-        
+
         return $this;
     }
-    
+
     /**
     * Get the answer from the AI.
     *
@@ -110,11 +109,11 @@ class AIService extends Manager
     public function answer()
     {
         $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
-        
+
         if ($this->model) {
             $provider->setModel($this->model);
         }
-        
+
         if ($this->systemInstruction) {
             $provider->setSystemInstruction($this->systemInstruction);
         }
@@ -122,19 +121,19 @@ class AIService extends Manager
         if (empty($this->userMessages)) {
             throw new InvalidArgumentException('No user messages provided. Call prompt() before calling run().');
         }
-        
+
         // Merge preview messages with current user messages
         $allMessages = array_merge($this->previewMessages, $this->userMessages);
-        
+
         $provider->setUserMessages($allMessages);
-        
+
         $provider->setCreativityLevel($this->creativity);
-        
+
         $response = $provider->generateResponse();
-        
+
         return $response;
     }
-    
+
     /**
     * Create an instance of the specified driver.
     *
@@ -146,14 +145,14 @@ class AIService extends Manager
     protected function createDriver($driver)
     {
         $method = 'create'.ucfirst($driver).'Driver';
-        
+
         if (method_exists($this, $method)) {
             return $this->$method();
         }
-        
+
         throw new InvalidArgumentException("Driver [{$driver}] not supported.");
     }
-    
+
     /**
     * Create the Ollama driver.
     *
@@ -162,14 +161,14 @@ class AIService extends Manager
     protected function createOllamaDriver()
     {
         $config = $this->config->get('ai.providers.ollama', []);
-        
+
         return new Providers\OllamaProvider(
             $config['base_url'] ?? 'http://localhost:11434',
             $config['default_model'] ?? 'llama3',
             $config['timeout'] ?? 30
         );
     }
-    
+
     /**
     * Create the OpenAI driver.
     *
@@ -178,14 +177,14 @@ class AIService extends Manager
     protected function createOpenaiDriver()
     {
         $config = $this->config->get('ai.providers.openai', []);
-        
+
         return new Providers\OpenAIProvider(
             $config['api_key'] ?? '',
             $config['default_model'] ?? 'gpt-4o',
             $config['timeout'] ?? 30
         );
     }
-    
+
     /**
     * Create the Anthropic driver.
     *
@@ -194,7 +193,7 @@ class AIService extends Manager
     protected function createAnthropicDriver()
     {
         $config = $this->config->get('ai.providers.anthropic', []);
-        
+
         return new Providers\AnthropicProvider(
             $config['api_key'] ?? '',
             $config['default_model'] ?? 'claude-3-opus-20240229',
@@ -210,14 +209,14 @@ class AIService extends Manager
     protected function createNovitaDriver()
     {
         $config = $this->config->get('ai.providers.novita', []);
-        
+
         return new Providers\NovitaProvider(
             $config['api_key'] ?? '',
             $config['default_model'] ?? 'deepseek/deepseek-v3-0324',
             $config['timeout'] ?? 30
         );
     }
-    
+
     /**
     * Define a mensagem do usuário (prompt principal).
     *
@@ -229,7 +228,7 @@ class AIService extends Manager
         $this->userMessages = [['role' => 'user', 'content' => $prompt]];
         return $this;
     }
-    
+
     /**
     * Alias for answer to match README usage.
     *
@@ -240,7 +239,7 @@ class AIService extends Manager
         $response = $this->answer();
         return new AIResponse($response);
     }
-    
+
     /**
     * Define mensagens de preview para o contexto da conversa.
     *
@@ -251,10 +250,10 @@ class AIService extends Manager
     {
         $messageObjects = Message::fromArray($messages);
         $this->previewMessages = Message::toArrayFormat($messageObjects);
-        
+
         return $this;
     }
-    
+
 
 }
 
