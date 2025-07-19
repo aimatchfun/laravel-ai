@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelAI\Enums;
+namespace AIMatchFun\LaravelAI\Enums;
 
 enum NovitaModel: string
 {
