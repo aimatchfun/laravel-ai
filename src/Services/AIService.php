@@ -4,6 +4,7 @@ namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
 use Illuminate\Support\Facades\DB;
+use AIMatchFun\LaravelAI\Contracts\AIProvider;
 use InvalidArgumentException;
 
 use AIMatchFun\LaravelAI\Services\AICreativity;
@@ -61,7 +62,7 @@ class AIService extends Manager
     * @param string $provider
     * @return $this
     */
-    public function provider(string $provider)
+    public function provider(string|AIProvider $provider)
     {
         $this->provider = $provider;
         return $this;
