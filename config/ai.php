@@ -13,8 +13,6 @@ return [
     */
     'default_provider' => env('AI_PROVIDER', 'ollama'),
 
-
-
     /*
     |--------------------------------------------------------------------------
     | AI Providers Configuration
