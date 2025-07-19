@@ -213,6 +213,22 @@ class AIService extends Manager
             $config['timeout'] ?? 30
         );
     }
+
+    /**
+    * Create the Novita driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
+    protected function createNovitaDriver()
+    {
+        $config = $this->config->get('ai.providers.novita', []);
+        
+        return new Providers\NovitaProvider(
+            $config['api_key'] ?? '',
+            $config['default_model'] ?? 'deepseek/deepseek-v3-0324',
+            $config['timeout'] ?? 30
+        );
+    }
     
     /**
     * Define a mensagem do usuário (prompt principal).
