@@ -40,19 +40,25 @@ return [
         'ollama' => [
             'base_url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
             'default_model' => env('OLLAMA_DEFAULT_MODEL', 'llama3'),
-            'timeout' => env('OLLAMA_TIMEOUT', 30), // Timeout in seconds
+            'timeout' => env('OLLAMA_TIMEOUT', 30), 
         ],
         
         'openai' => [
             'api_key' => env('OPENAI_API_KEY'),
             'default_model' => env('OPENAI_DEFAULT_MODEL', 'gpt-4o'),
-            'timeout' => env('OPENAI_TIMEOUT', 30), // Timeout in seconds
+            'timeout' => env('OPENAI_TIMEOUT', 30), 
         ],
         
         'anthropic' => [
             'api_key' => env('ANTHROPIC_API_KEY'),
             'default_model' => env('ANTHROPIC_DEFAULT_MODEL', 'claude-3-opus-20240229'),
-            'timeout' => env('ANTHROPIC_TIMEOUT', 30), // Timeout in seconds
+            'timeout' => env('ANTHROPIC_TIMEOUT', 30), 
+        ],
+
+        'novita' => [
+            'api_key' => env('NOVITA_API_KEY'),
+            'default_model' => env('NOVITA_DEFAULT_MODEL', 'deepseek/deepseek-v3-0324'),
+            'timeout' => env('NOVITA_TIMEOUT', 30), 
         ],
     ],
 ];

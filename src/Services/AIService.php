@@ -288,16 +288,16 @@ class AIService extends Manager
         }
         
         return DB::connection(config('ai.conversation_history.connection'))
-        ->table('laravelai_conversation_histories')
-        ->insert([
-            'conversation_id' => $this->conversationId,
-            'provider' => $this->provider ?: $this->getDefaultDriver(),
-            'model' => $this->model,
-            'role' => $role,
-            'content' => $content,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            ->table('laravelai_conversation_histories')
+            ->insert([
+                'conversation_id' => $this->conversationId,
+                'provider' => $this->provider ?: $this->getDefaultDriver(),
+                'model' => $this->model,
+                'role' => $role,
+                'content' => $content,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
     }
     
     /**
