@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 
+## [1.7.0] - 2024-12-19
+
 ### Added
-- Suporte a múltiplos provedores de IA: Ollama, OpenAI, Anthropic, Novita.
+- Suporte ao Models Lab provider para integração com a plataforma Models Lab.
+- Provider `ModelsLabProvider` com implementação completa da interface `AIProvider`.
+- Configurações específicas para o Models Lab no arquivo de configuração.
+- Suporte a múltiplos provedores de IA: Ollama, OpenAI, Anthropic, Novita, Models Lab.
 - Interface fluente via Facade `AI` para prompts, modelos, instruções de sistema e criatividade.
 - Métodos `prompt`, `creativityLevel`, `systemInstruction`, `provider`, `model`, `previewMessages` e `run`.
 - Enum `AICreativity` para níveis de criatividade (`LOW`, `MEDIUM`, `HIGH`).
