@@ -218,6 +218,22 @@ class AIService extends Manager
     }
 
     /**
+    * Create the ModelsLab driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
+    protected function createModelsLabDriver()
+    {
+        $config = $this->config->get('ai.providers.modelslab', []);
+
+        return new Providers\ModelsLabProvider(
+            $config['api_key'] ?? '',
+            $config['default_model'] ?? 'llama3',
+            $config['timeout'] ?? 30
+        );
+    }
+
+    /**
     * Define a mensagem do usuário (prompt principal).
     *
     * @param string $prompt

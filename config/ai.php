@@ -45,5 +45,11 @@ return [
             'default_model' => env('NOVITA_DEFAULT_MODEL', 'deepseek/deepseek-v3-0324'),
             'timeout' => env('NOVITA_TIMEOUT', 30), 
         ],
+
+        'modelslab' => [
+            'api_key' => env('MODELSLAB_API_KEY'),
+            'default_model' => env('MODELSLAB_DEFAULT_MODEL', 'llama3'),
+            'timeout' => env('MODELSLAB_TIMEOUT', 30), 
+        ],
     ],
 ];
