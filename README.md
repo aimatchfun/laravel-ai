@@ -1,6 +1,6 @@
 # Laravel AI
 
-A Laravel package that provides a fluent interface for interacting with AI providers like Ollama, OpenAI, and Anthropic.
+A Laravel package that provides a fluent interface for interacting with AI providers like Ollama, OpenAI, Anthropic, Novita, and ModelsLab.
 
 ## Installation
 
@@ -70,6 +70,18 @@ return [
             'default_model' => env('ANTHROPIC_DEFAULT_MODEL', 'claude-3-opus-20240229'),
             'timeout' => env('ANTHROPIC_TIMEOUT', 30), // Timeout in seconds
         ],
+
+        'novita' => [
+            'api_key' => env('NOVITA_API_KEY'),
+            'default_model' => env('NOVITA_DEFAULT_MODEL', 'deepseek/deepseek-v3-0324'),
+            'timeout' => env('NOVITA_TIMEOUT', 30), // Timeout in seconds
+        ],
+
+        'modelslab' => [
+            'api_key' => env('MODELSLAB_API_KEY'),
+            'default_model' => env('MODELSLAB_DEFAULT_MODEL', 'llama3'),
+            'timeout' => env('MODELSLAB_TIMEOUT', 30), // Timeout in seconds
+        ],
     ],
 ];
 ```
@@ -89,6 +101,14 @@ OPENAI_TIMEOUT=30
 ANTHROPIC_API_KEY=your-anthropic-api-key
 ANTHROPIC_DEFAULT_MODEL=claude-3-opus-20240229
 ANTHROPIC_TIMEOUT=30
+
+NOVITA_API_KEY=your-novita-api-key
+NOVITA_DEFAULT_MODEL=deepseek/deepseek-v3-0324
+NOVITA_TIMEOUT=30
+
+MODELSLAB_API_KEY=your-modelslab-api-key
+MODELSLAB_DEFAULT_MODEL=llama3
+MODELSLAB_TIMEOUT=30
 ```
 
 **Timeout:** You can set the timeout (in seconds) for each provider. If a request takes longer than this value, it will fail with a timeout error. The default is 30 seconds for all providers.
