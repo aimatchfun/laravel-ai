@@ -65,16 +65,13 @@ class OllamaProvider extends AbstractProvider
         
         $payload['messages'] = $messages;
 
-        Log::debug('Model: ' . $this->model);
-        Log::debug('Creativity: ' . $this->creativityLevel);
-        
-        $response = Http::timeout($this->timeout)->post(rtrim($this->baseUrl, '/') . '/api/chat', $payload);
+        $response = Http::withToken(config('ai.providers.ollama.token'))
+            ->timeout($this->timeout)
+            ->post(rtrim($this->baseUrl, '/') . '/api/chat', $payload);
         
         if ($response->failed()) {
             throw new Exception('Failed to get response from Ollama: ' . $response->body());
         }
-
-        Log::debug('Response: ' . $response->body());
         
         return $response->json('message.content') ?? '';
         
