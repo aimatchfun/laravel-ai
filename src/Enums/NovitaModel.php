@@ -52,6 +52,7 @@ enum NovitaModel: string
     case GLM_4_32B_0414 = 'thudm/glm-4-32b-0414';
     case LLAMA_3_2_3B_INSTRUCT = 'meta-llama/llama-3.2-3b-instruct';
     case L31_70B_EURYALE_V2_2 = 'sao10k/l31-70b-euryale-v2.2';
+    case KIMI_K2_0905 = 'moonshotai/kimi-k2-0905';
 
     /**
      * Get all available models as an array
