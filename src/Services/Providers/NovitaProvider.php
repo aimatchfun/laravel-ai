@@ -48,7 +48,6 @@ class NovitaProvider extends AbstractProvider
         $payload = [
             'model' => $this->model,
             'temperature' => $this->creativityLevel,
-            'format' => ['type' => 'text'],
             'stream' => false,
             'top_p' => 1,
             'min_p' => 0,
@@ -57,6 +56,13 @@ class NovitaProvider extends AbstractProvider
             'frequency_penalty' => 0,
             'repetition_penalty' => 1
         ];
+
+        // Set response format - use structured outputs if provided, otherwise default to text
+        if ($this->responseFormat) {
+            $payload['response_format'] = $this->responseFormat;
+        } else {
+            $payload['format'] = ['type' => 'text'];
+        }
 
         $messages = [];
 

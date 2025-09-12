@@ -41,6 +41,11 @@ class AIService extends Manager
     protected $previewMessages = [];
 
     /**
+    * @var array|null
+    */
+    protected $responseFormat = null;
+
+    /**
     * Get the default AI provider name.
     *
     * @return string
@@ -102,6 +107,19 @@ class AIService extends Manager
     }
 
     /**
+    * Set the response format for structured outputs.
+    *
+    * @param array $format
+    * @return $this
+    */
+    public function responseFormat(array $format)
+    {
+        $this->responseFormat = $format;
+
+        return $this;
+    }
+
+    /**
     * Get the answer from the AI.
     *
     * @return string
@@ -128,6 +146,10 @@ class AIService extends Manager
         $provider->setUserMessages($allMessages);
 
         $provider->setCreativityLevel($this->creativity);
+
+        if ($this->responseFormat) {
+            $provider->setResponseFormat($this->responseFormat);
+        }
 
         $response = $provider->generateResponse();
 

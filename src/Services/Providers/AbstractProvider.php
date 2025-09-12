@@ -27,6 +27,11 @@ abstract class AbstractProvider implements AIProvider
     protected $creativityLevel = 1.0;
 
     /**
+     * @var array|null
+     */
+    protected $responseFormat = null;
+
+    /**
      * Set the model to use.
      *
      * @param string $model
@@ -71,6 +76,18 @@ abstract class AbstractProvider implements AIProvider
     public function setCreativityLevel(float $level)
     {
         $this->creativityLevel = $level;
+        return $this;
+    }
+
+    /**
+     * Set the response format for structured outputs.
+     *
+     * @param array $format
+     * @return $this
+     */
+    public function setResponseFormat(array $format)
+    {
+        $this->responseFormat = $format;
         return $this;
     }
 

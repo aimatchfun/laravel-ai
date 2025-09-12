@@ -37,6 +37,14 @@ interface AIProvider
     public function setCreativityLevel(float $level);
 
     /**
+     * Set the response format for structured outputs.
+     *
+     * @param array $format
+     * @return $this
+     */
+    public function setResponseFormat(array $format);
+
+    /**
      * Generate a response from the AI.
      *
      * @return string
