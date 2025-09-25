@@ -53,7 +53,8 @@ enum NovitaModel: string
     case LLAMA_3_2_3B_INSTRUCT = 'meta-llama/llama-3.2-3b-instruct';
     case L31_70B_EURYALE_V2_2 = 'sao10k/l31-70b-euryale-v2.2';
     case KIMI_K2_0905 = 'moonshotai/kimi-k2-0905';
-    CASE QWEN_NEXT_80B_A3B_INSTRUCT = 'qwen/qwen3-next-80b-a3b-instruct';
+    case QWEN_NEXT_80B_A3B_INSTRUCT = 'qwen/qwen3-next-80b-a3b-instruct';
+    case QWEN3_VL_235B_A22B_INSTRUCT = 'qwen/qwen3-vl-235b-a22b-instruct';
 
     /**
      * Get all available models as an array
