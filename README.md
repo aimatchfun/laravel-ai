@@ -113,6 +113,10 @@ NOVITA_TIMEOUT=30
 MODELSLAB_API_KEY=your-modelslab-api-key
 MODELSLAB_DEFAULT_MODEL=llama3
 MODELSLAB_TIMEOUT=30
+
+OPENROUTER_API_KEY=your-api-key
+OPENROUTER_DEFAULT_MODEL=openrouter/auto
+OPENROUTER_TIMEOUT=30
 ```
 
 **Timeout:** You can set the timeout (in seconds) for each provider. If a request takes longer than this value, it will fail with a timeout error. The default is 30 seconds for all providers.
