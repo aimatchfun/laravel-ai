@@ -9,6 +9,7 @@ enum AIProvider: string
     case ANTHROPIC = 'anthropic';
     case NOVITA = 'novita';
     case MODELSLAB = 'modelslab';
+    case OPENROUTER = 'openrouter';
 
     /**
      * Get all available providers as an array
@@ -29,6 +30,7 @@ enum AIProvider: string
             self::ANTHROPIC->value => 'Anthropic',
             self::NOVITA->value => 'Novita',
             self::MODELSLAB->value => 'Modelslab',
+            self::OPENROUTER->value => 'OpenRouter',
         ];
     }
 
@@ -43,6 +45,7 @@ enum AIProvider: string
             self::ANTHROPIC => 'Anthropic',
             self::NOVITA => 'Novita',
             self::MODELSLAB => 'Modelslab',
+            self::OPENROUTER => 'OpenRouter',
         };
     }
 
