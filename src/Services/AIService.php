@@ -256,6 +256,22 @@ class AIService extends Manager
     }
 
     /**
+    * Create the OpenRouter driver.
+    *
+    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+    */
+    protected function createOpenRouterDriver()
+    {
+        $config = $this->config->get('ai.providers.openrouter', []);
+        
+        return new Providers\OpenRouterProvider(
+            $config['api_key'] ?? '',
+            $config['default_model'] ?? 'openrouter/auto',
+            $config['timeout'] ?? 30
+        );
+    }
+
+    /**
     * Define a mensagem do usuário (prompt principal).
     *
     * @param string $prompt

@@ -12,6 +12,10 @@ composer require aimatchfun/laravel-ai
 
 The package will automatically register itself.
 
+### Standalone Usage (Without Laravel)
+
+If you want to test the examples without installing Laravel, see [STANDALONE_EXAMPLES.md](STANDALONE_EXAMPLES.md) for instructions on running examples with minimal dependencies.
+
 You can publish the configuration file with:
 
 ```bash

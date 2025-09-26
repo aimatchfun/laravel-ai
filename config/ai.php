@@ -52,5 +52,11 @@ return [
             'default_model' => env('MODELSLAB_DEFAULT_MODEL', 'llama3'),
             'timeout' => env('MODELSLAB_TIMEOUT', 30), 
         ],
+
+        'openrouter' => [
+            'api_key' => env('OPENROUTER_API_KEY'),
+            'default_model' => env('OPENROUTER_DEFAULT_MODEL', 'openrouter/auto'),
+            'timeout' => env('OPENROUTER_TIMEOUT', 30), 
+        ],
     ],
 ];
