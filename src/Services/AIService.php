@@ -256,17 +256,33 @@ class AIService extends Manager
     }
 
     /**
-    * Create the OpenRouter driver.
-    *
-    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-    */
+     * Create the OpenRouter driver.
+     *
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+     */
     protected function createOpenRouterDriver()
     {
         $config = $this->config->get('ai.providers.openrouter', []);
-        
+
         return new Providers\OpenRouterProvider(
             $config['api_key'] ?? '',
             $config['default_model'] ?? 'openrouter/auto',
+            $config['timeout'] ?? 30
+        );
+    }
+
+    /**
+     * Create the Together driver.
+     *
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+     */
+    protected function createTogetherDriver()
+    {
+        $config = $this->config->get('ai.providers.together', []);
+
+        return new Providers\TogetherProvider(
+            $config['api_key'] ?? '',
+            $config['default_model'] ?? 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
             $config['timeout'] ?? 30
         );
     }

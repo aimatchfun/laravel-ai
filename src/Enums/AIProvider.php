@@ -10,6 +10,7 @@ enum AIProvider: string
     case NOVITA = 'novita';
     case MODELSLAB = 'modelslab';
     case OPENROUTER = 'openrouter';
+    case TOGETHER = 'together';
 
     /**
      * Get all available providers as an array
@@ -31,6 +32,7 @@ enum AIProvider: string
             self::NOVITA->value => 'Novita',
             self::MODELSLAB->value => 'Modelslab',
             self::OPENROUTER->value => 'OpenRouter',
+            self::TOGETHER->value => 'Together',
         ];
     }
 
@@ -46,6 +48,7 @@ enum AIProvider: string
             self::NOVITA => 'Novita',
             self::MODELSLAB => 'Modelslab',
             self::OPENROUTER => 'OpenRouter',
+            self::TOGETHER => 'Together',
         };
     }
 

@@ -56,7 +56,13 @@ return [
         'openrouter' => [
             'api_key' => env('OPENROUTER_API_KEY'),
             'default_model' => env('OPENROUTER_DEFAULT_MODEL', 'openrouter/auto'),
-            'timeout' => env('OPENROUTER_TIMEOUT', 30), 
+            'timeout' => env('OPENROUTER_TIMEOUT', 30),
+        ],
+
+        'together' => [
+            'api_key' => env('TOGETHER_API_KEY'),
+            'default_model' => env('TOGETHER_DEFAULT_MODEL', 'meta-llama/Llama-3.3-70B-Instruct-Turbo'),
+            'timeout' => env('TOGETHER_TIMEOUT', 30),
         ],
     ],
 ];
