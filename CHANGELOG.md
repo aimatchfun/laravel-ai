@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.12.0] - 2024-12-XX
+
+### Added
+- Campos `inputTokens` e `outputTokens` no `AIResponse` para rastreamento de uso de tokens.
+- Método `getUsageData()` em todos os provedores para extrair dados de uso das respostas da API.
+- Suporte para extração de dados de tokens nos provedores Novita, OpenAI, Anthropic, Together e OpenRouter.
+- Propriedade `lastResponse` no `AbstractProvider` para armazenar a resposta completa da API.
+
+### Changed
+- Método `run()` do `AIService` agora extrai e passa dados de uso de tokens para o `AIResponse`.
+- Provedores agora armazenam a resposta completa da API antes de retornar apenas o conteúdo.
+
 ## [1.7.0] - 2024-12-19
 
 ### Added

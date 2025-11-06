@@ -70,7 +70,20 @@ class ModelsLabProvider extends AbstractProvider implements AIProvider
             throw new Exception("Erro ao chamar API ModelsLab: " . $response->body());
         }
         
-        return $response->json('message');
+        $this->lastResponse = $response->json();
+        
+        return $this->lastResponse['message'] ?? '';
+    }
+
+    /**
+     * Get usage data from the last response.
+     *
+     * @return array|null Returns array with 'input_tokens' and 'output_tokens' keys, or null if not available
+     */
+    public function getUsageData(): ?array
+    {
+        // ModelsLab doesn't provide usage data in a standardized format
+        return null;
     }
 }
 

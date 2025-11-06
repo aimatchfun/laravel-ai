@@ -306,8 +306,41 @@ class AIService extends Manager
     */
     public function run() : AIResponse
     {
-        $response = $this->answer();
-        return new AIResponse($response);
+        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
+
+        if ($this->model) {
+            $provider->setModel($this->model);
+        }
+
+        if ($this->systemInstruction) {
+            $provider->setSystemInstruction($this->systemInstruction);
+        }
+
+        if (empty($this->userMessages)) {
+            throw new InvalidArgumentException('No user messages provided. Call prompt() before calling run().');
+        }
+
+        // Merge preview messages with current user messages
+        $allMessages = array_merge($this->previewMessages, $this->userMessages);
+
+        $provider->setUserMessages($allMessages);
+
+        $provider->setCreativityLevel($this->creativity);
+
+        if ($this->responseFormat) {
+            $provider->setResponseFormat($this->responseFormat);
+        }
+
+        $response = $provider->generateResponse();
+        
+        // Get usage data from provider
+        $usageData = $provider->getUsageData();
+        
+        return new AIResponse(
+            answer: $response,
+            inputTokens: $usageData['input_tokens'] ?? null,
+            outputTokens: $usageData['output_tokens'] ?? null
+        );
     }
 
     /**

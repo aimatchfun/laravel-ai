@@ -79,13 +79,32 @@ class AnthropicProvider extends AbstractProvider
             ])->timeout($this->timeout)->post('https://api.anthropic.com/v1/messages', $payload);
 
             if ($response->successful()) {
-                $data = $response->json();
-                return $data['content'][0]['text'] ?? '';
+                $this->lastResponse = $response->json();
+                return $this->lastResponse['content'][0]['text'] ?? '';
             } else {
                 throw new Exception('Failed to get response from Anthropic: ' . $response->body());
             }
         } catch (Exception $e) {
             throw new Exception('Anthropic API error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Get usage data from the last response.
+     *
+     * @return array|null Returns array with 'input_tokens' and 'output_tokens' keys, or null if not available
+     */
+    public function getUsageData(): ?array
+    {
+        if (!$this->lastResponse || !isset($this->lastResponse['usage'])) {
+            return null;
+        }
+
+        $usage = $this->lastResponse['usage'];
+
+        return [
+            'input_tokens' => $usage['input_tokens'] ?? null,
+            'output_tokens' => $usage['output_tokens'] ?? null,
+        ];
     }
 }

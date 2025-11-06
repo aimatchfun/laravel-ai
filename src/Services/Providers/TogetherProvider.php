@@ -80,13 +80,32 @@ class TogetherProvider extends AbstractProvider
             ])->timeout($this->timeout)->post('https://api.together.xyz/v1/chat/completions', $payload);
 
             if ($response->successful()) {
-                $data = $response->json();
-                return $data['choices'][0]['message']['content'] ?? '';
+                $this->lastResponse = $response->json();
+                return $this->lastResponse['choices'][0]['message']['content'] ?? '';
             } else {
                 throw new Exception('Failed to get response from Together AI: ' . $response->body());
             }
         } catch (Exception $e) {
             throw new Exception('Together AI API error: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Get usage data from the last response.
+     *
+     * @return array|null Returns array with 'input_tokens' and 'output_tokens' keys, or null if not available
+     */
+    public function getUsageData(): ?array
+    {
+        if (!$this->lastResponse || !isset($this->lastResponse['usage'])) {
+            return null;
+        }
+
+        $usage = $this->lastResponse['usage'];
+
+        return [
+            'input_tokens' => $usage['prompt_tokens'] ?? null,
+            'output_tokens' => $usage['completion_tokens'] ?? null,
+        ];
     }
 }

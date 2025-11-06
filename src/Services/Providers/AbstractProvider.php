@@ -32,6 +32,21 @@ abstract class AbstractProvider implements AIProvider
     protected $responseFormat = null;
 
     /**
+     * @var array|null
+     */
+    protected $lastResponse = null;
+
+    /**
+     * Get usage data from the last response.
+     *
+     * @return array|null Returns array with 'input_tokens' and 'output_tokens' keys, or null if not available
+     */
+    public function getUsageData(): ?array
+    {
+        return null;
+    }
+
+    /**
      * Set the model to use.
      *
      * @param string $model
