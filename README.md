@@ -175,8 +175,8 @@ $response = AI::provider('ollama')
     ->run();
 
 // Using response format for structured outputs (JSON schema)
-$response = AI::provider('openai')
-    ->model('gpt-4o')
+$response = AI::provider('novita')
+    ->model('deepseek/deepseek-v3-0324')
     ->responseFormat([
         'type' => 'json_object',
         'schema' => [
@@ -260,14 +260,14 @@ $response = AI::previewMessages($messages)
 
 The `responseFormat` method allows you to request structured outputs from the AI, such as JSON objects following a specific schema. This is useful when you need the AI to return data in a consistent, parseable format.
 
-**Supported Providers:** OpenAI, Anthropic, Together, Novita, OpenRouter
+**Supported Providers:** Novita only
 
 Example with JSON schema:
 
 ```php
 // Request a JSON object response
-$response = AI::provider('openai')
-    ->model('gpt-4o')
+$response = AI::provider('novita')
+    ->model('deepseek/deepseek-v3-0324')
     ->responseFormat([
         'type' => 'json_object'
     ])
@@ -275,8 +275,8 @@ $response = AI::provider('openai')
     ->run();
 
 // Request structured output with schema
-$response = AI::provider('openai')
-    ->model('gpt-4o')
+$response = AI::provider('novita')
+    ->model('deepseek/deepseek-v3-0324')
     ->responseFormat([
         'type' => 'json_object',
         'schema' => [
@@ -296,7 +296,7 @@ $data = json_decode($response->answer, true);
 // $data will contain: ['name' => 'John Doe', 'age' => 30, 'email' => 'john@example.com']
 ```
 
-**Note:** The exact format of the `responseFormat` array may vary depending on the provider. Refer to each provider's documentation for specific schema requirements.
+**Note:** Currently, only the Novita provider supports structured outputs via `responseFormat`. Refer to the [Novita documentation](https://novita.ai/) for specific schema requirements.
 
 ## Available Models
 
