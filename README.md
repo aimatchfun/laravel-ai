@@ -1,6 +1,14 @@
 # Laravel AI
 
-A Laravel package that provides a fluent interface for interacting with AI providers like Ollama, OpenAI, Anthropic, Novita, and ModelsLab.
+A Laravel package that provides a fluent interface for interacting with AI providers:
+
+- Ollama
+- OpenAI
+- Anthropic
+- Novita
+- ModelsLab
+- OpenRouter
+- Together
 
 ## Installation
 
@@ -296,7 +304,7 @@ $data = json_decode($response->answer, true);
 // $data will contain: ['name' => 'John Doe', 'age' => 30, 'email' => 'john@example.com']
 ```
 
-**Note:** Currently, only the Novita provider supports structured outputs via `responseFormat`. Refer to the [Novita documentation](https://novita.ai/) for specific schema requirements.
+**Note:** Currently, only the Novita provider supports structured outputs via `responseFormat`. Please consult the [Novita documentation on structured outputs](https://novita.ai/docs/guides/llm-structured-outputs) to confirm which models support this feature and for specific schema requirements.
 
 ## Available Models
 
