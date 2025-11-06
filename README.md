@@ -174,6 +174,23 @@ $response = AI::provider('ollama')
     ->creativityLevel(AICreativity::HIGH)
     ->run();
 
+// Using response format for structured outputs (JSON schema)
+$response = AI::provider('openai')
+    ->model('gpt-4o')
+    ->responseFormat([
+        'type' => 'json_object',
+        'schema' => [
+            'type' => 'object',
+            'properties' => [
+                'name' => ['type' => 'string'],
+                'age' => ['type' => 'integer']
+            ],
+            'required' => ['name', 'age']
+        ]
+    ])
+    ->prompt('Extract name and age from: John is 30 years old.')
+    ->run();
+
 // Continue a conversation using preview messages
 $response = AI::prompt('Hello, who are you?')->run();
 
@@ -195,9 +212,15 @@ The `run()` method returns an instance of `AIResponse`:
 $response = AI::prompt('What is Laravel?')->run();
 
 $answer = $response->answer; // string
+$inputTokens = $response->inputTokens; // int|null
+$outputTokens = $response->outputTokens; // int|null
 ```
 
 - `answer`: The AI's response to your prompt(s).
+- `inputTokens`: Number of input tokens used (available for Novita, OpenAI, Anthropic, Together, and OpenRouter providers).
+- `outputTokens`: Number of output tokens used (available for Novita, OpenAI, Anthropic, Together, and OpenRouter providers).
+
+**Note:** Token information is only available for providers that return usage data in their API responses. For providers like Ollama and ModelsLab, these values will be `null`.
 
 ### Preview Messages
 
@@ -232,6 +255,48 @@ $response = AI::previewMessages($messages)
     ->prompt('What can you help me with?')
     ->run();
 ```
+
+### Response Format (Structured Outputs)
+
+The `responseFormat` method allows you to request structured outputs from the AI, such as JSON objects following a specific schema. This is useful when you need the AI to return data in a consistent, parseable format.
+
+**Supported Providers:** OpenAI, Anthropic, Together, Novita, OpenRouter
+
+Example with JSON schema:
+
+```php
+// Request a JSON object response
+$response = AI::provider('openai')
+    ->model('gpt-4o')
+    ->responseFormat([
+        'type' => 'json_object'
+    ])
+    ->prompt('Return a JSON object with name and age.')
+    ->run();
+
+// Request structured output with schema
+$response = AI::provider('openai')
+    ->model('gpt-4o')
+    ->responseFormat([
+        'type' => 'json_object',
+        'schema' => [
+            'type' => 'object',
+            'properties' => [
+                'name' => ['type' => 'string'],
+                'age' => ['type' => 'integer'],
+                'email' => ['type' => 'string']
+            ],
+            'required' => ['name', 'age']
+        ]
+    ])
+    ->prompt('Extract name, age, and email from: John Doe is 30 years old and his email is john@example.com')
+    ->run();
+
+$data = json_decode($response->answer, true);
+// $data will contain: ['name' => 'John Doe', 'age' => 30, 'email' => 'john@example.com']
+```
+
+**Note:** The exact format of the `responseFormat` array may vary depending on the provider. Refer to each provider's documentation for specific schema requirements.
 
 ## Available Models
 
