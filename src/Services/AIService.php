@@ -41,15 +41,20 @@ class AIService extends Manager
     protected $previewMessages = [];
 
     /**
-    * @var array|null
-    */
+     * @var array|null
+     */
     protected $responseFormat = null;
 
     /**
-    * Get the default AI provider name.
-    *
-    * @return string
-    */
+     * @var bool
+     */
+    protected $streamMode = false;
+
+    /**
+     * Get the default AI provider name.
+     *
+     * @return string
+     */
     public function getDefaultDriver()
     {
         return $this->config->get('ai.default_provider', 'ollama');
@@ -91,6 +96,56 @@ class AIService extends Manager
         $this->systemInstruction = $instruction;
 
         return $this;
+    }
+
+    /**
+     * Set the stream mode.
+     *
+     * @param bool $stream
+     * @return $this
+     */
+    public function stream(bool $stream = true)
+    {
+        $this->streamMode = $stream;
+
+        return $this;
+    }
+
+    /**
+     * Get streaming response from the AI.
+     *
+     * @return \Generator
+     */
+    public function streamResponse()
+    {
+        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
+
+        if ($this->model) {
+            $provider->setModel($this->model);
+        }
+
+        if ($this->systemInstruction) {
+            $provider->setSystemInstruction($this->systemInstruction);
+        }
+
+        if (empty($this->userMessages)) {
+            throw new InvalidArgumentException('No user messages provided. Call prompt() before calling streamResponse().');
+        }
+
+        // Merge preview messages with current user messages
+        $allMessages = array_merge($this->previewMessages, $this->userMessages);
+
+        $provider->setUserMessages($allMessages);
+
+        $provider->setCreativityLevel($this->creativity);
+
+        if ($this->responseFormat) {
+            $provider->setResponseFormat($this->responseFormat);
+        }
+
+        $provider->setStreamMode(true);
+
+        return $provider->generateStreamResponse();
     }
 
     /**
@@ -149,6 +204,10 @@ class AIService extends Manager
 
         if ($this->responseFormat) {
             $provider->setResponseFormat($this->responseFormat);
+        }
+
+        if ($this->streamMode) {
+            $provider->setStreamMode(true);
         }
 
         $response = $provider->generateResponse();
@@ -329,6 +388,10 @@ class AIService extends Manager
 
         if ($this->responseFormat) {
             $provider->setResponseFormat($this->responseFormat);
+        }
+
+        if ($this->streamMode) {
+            $provider->setStreamMode(true);
         }
 
         $response = $provider->generateResponse();

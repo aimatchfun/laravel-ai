@@ -45,9 +45,24 @@ interface AIProvider
     public function setResponseFormat(array $format);
 
     /**
+     * Set the stream mode.
+     *
+     * @param bool $stream
+     * @return $this
+     */
+    public function setStreamMode(bool $stream);
+
+    /**
      * Generate a response from the AI.
      *
      * @return string
      */
     public function generateResponse();
+
+    /**
+     * Generate a streaming response from the AI.
+     *
+     * @return \Generator
+     */
+    public function generateStreamResponse();
 }

@@ -46,6 +46,14 @@ class OllamaProvider extends AbstractProvider
     */
     public function generateResponse()
     {
+        if ($this->streamMode) {
+            $fullResponse = '';
+            foreach ($this->generateStreamResponse() as $chunk) {
+                $fullResponse .= $chunk;
+            }
+            return $fullResponse;
+        }
+
         $payload = [
             'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
             'temperature' => $this->creativityLevel,
@@ -76,6 +84,56 @@ class OllamaProvider extends AbstractProvider
         $this->lastResponse = $response->json();
         
         return $this->lastResponse['message']['content'] ?? '';
+    }
+
+    public function generateStreamResponse()
+    {
+        $payload = [
+            'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
+            'temperature' => $this->creativityLevel,
+            'stream' => true,
+        ];
+        
+        $messages = [];
+        
+        if ($this->systemInstruction) {
+            $messages[] = [
+                'role' => 'system',
+                'content' => $this->systemInstruction
+            ];
+        }
+        
+        $messages = array_merge($messages, $this->userMessages);
+        
+        $payload['messages'] = $messages;
+
+        $response = Http::withToken(config('ai.providers.ollama.token'))
+            ->timeout($this->timeout)
+            ->post(rtrim($this->baseUrl, '/') . '/api/chat', $payload);
+
+        if ($response->failed()) {
+            throw new Exception('Failed to get response from Ollama: ' . $response->body());
+        }
+
+        $body = $response->body();
+        $lines = explode("\n", $body);
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line) || !str_starts_with($line, 'data: ')) {
+                continue;
+            }
+
+            $data = substr($line, 6);
+            if ($data === '[DONE]') {
+                break;
+            }
+
+            $json = json_decode($data, true);
+            if (isset($json['message']['content'])) {
+                yield $json['message']['content'];
+            }
+        }
     }
 
     /**

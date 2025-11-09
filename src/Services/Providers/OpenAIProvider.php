@@ -45,6 +45,14 @@ class OpenAIProvider extends AbstractProvider
      */
     public function generateResponse()
     {
+        if ($this->streamMode) {
+            $fullResponse = '';
+            foreach ($this->generateStreamResponse() as $chunk) {
+                $fullResponse .= $chunk;
+            }
+            return $fullResponse;
+        }
+
         try {
             $payload = [
                 'model' => $this->model,
@@ -79,6 +87,65 @@ class OpenAIProvider extends AbstractProvider
                 return $this->lastResponse['choices'][0]['message']['content'] ?? '';
             } else {
                 throw new Exception('Failed to get response from OpenAI: ' . $response->body());
+            }
+        } catch (Exception $e) {
+            throw new Exception('OpenAI API error: ' . $e->getMessage());
+        }
+    }
+
+    public function generateStreamResponse()
+    {
+        try {
+            $payload = [
+                'model' => $this->model,
+                'temperature' => $this->creativityLevel,
+                'stream' => true
+            ];
+
+            $messages = [];
+            
+            if ($this->systemInstruction) {
+                $messages[] = [
+                    'role' => 'system',
+                    'content' => $this->systemInstruction
+                ];
+            }
+            
+            if (!empty($this->userMessages)) {
+                $messages = array_merge($messages, $this->userMessages);
+            } else {
+                throw new Exception('No user messages provided.');
+            }
+            
+            $payload['messages'] = $messages;
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json'
+            ])->timeout($this->timeout)->post('https://api.openai.com/v1/chat/completions', $payload);
+
+            if ($response->failed()) {
+                throw new Exception('Failed to get response from OpenAI: ' . $response->body());
+            }
+
+            $body = $response->body();
+            $lines = explode("\n", $body);
+
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line) || !str_starts_with($line, 'data: ')) {
+                    continue;
+                }
+
+                $data = substr($line, 6);
+                if ($data === '[DONE]') {
+                    break;
+                }
+
+                $json = json_decode($data, true);
+                if (isset($json['choices'][0]['delta']['content'])) {
+                    yield $json['choices'][0]['delta']['content'];
+                }
             }
         } catch (Exception $e) {
             throw new Exception('OpenAI API error: ' . $e->getMessage());

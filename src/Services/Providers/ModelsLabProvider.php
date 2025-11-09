@@ -52,6 +52,14 @@ class ModelsLabProvider extends AbstractProvider implements AIProvider
 
     public function generateResponse()
     {
+        if ($this->streamMode) {
+            $fullResponse = '';
+            foreach ($this->generateStreamResponse() as $chunk) {
+                $fullResponse .= $chunk;
+            }
+            return $fullResponse;
+        }
+
         $messages = array_merge([[
             'role' => 'system',
             'content' => $this->systemInstruction
@@ -73,6 +81,33 @@ class ModelsLabProvider extends AbstractProvider implements AIProvider
         $this->lastResponse = $response->json();
         
         return $this->lastResponse['message'] ?? '';
+    }
+
+    public function generateStreamResponse()
+    {
+        // ModelsLab doesn't support streaming, so we yield the full response
+        $messages = array_merge([[
+            'role' => 'system',
+            'content' => $this->systemInstruction
+        ]], $this->userMessages);
+
+        $response = Http::timeout($this->timeout)
+            ->post($this->baseUrl . '/api/v6/llm/uncensored_chat', [
+                'key' => $this->apiKey,
+                'messages' => $messages,
+                'max_tokens' => 1000,
+                'temperature' => $this->creativityLevel
+            ]);
+        
+        if ($response->failed()) {
+            Log::error("Erro ao chamar API ModelsLab: " . $response->body());
+            throw new Exception("Erro ao chamar API ModelsLab: " . $response->body());
+        }
+        
+        $this->lastResponse = $response->json();
+        $message = $this->lastResponse['message'] ?? '';
+        
+        yield $message;
     }
 
     /**

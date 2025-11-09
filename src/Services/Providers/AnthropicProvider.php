@@ -45,6 +45,14 @@ class AnthropicProvider extends AbstractProvider
      */
     public function generateResponse()
     {
+        if ($this->streamMode) {
+            $fullResponse = '';
+            foreach ($this->generateStreamResponse() as $chunk) {
+                $fullResponse .= $chunk;
+            }
+            return $fullResponse;
+        }
+
         try {
             $payload = [
                 'model' => $this->model,
@@ -83,6 +91,71 @@ class AnthropicProvider extends AbstractProvider
                 return $this->lastResponse['content'][0]['text'] ?? '';
             } else {
                 throw new Exception('Failed to get response from Anthropic: ' . $response->body());
+            }
+        } catch (Exception $e) {
+            throw new Exception('Anthropic API error: ' . $e->getMessage());
+        }
+    }
+
+    public function generateStreamResponse()
+    {
+        try {
+            $payload = [
+                'model' => $this->model,
+                'temperature' => $this->creativityLevel,
+                'max_tokens' => 1024,
+                'stream' => true
+            ];
+
+            $messages = [];
+            
+            if ($this->systemInstruction) {
+                $payload['system'] = $this->systemInstruction;
+            }
+            
+            if (!empty($this->userMessages)) {
+                foreach ($this->userMessages as $msg) {
+                    $messages[] = [
+                        'role' => $msg['role'],
+                        'content' => $msg['content']
+                    ];
+                }
+            } else {
+                throw new Exception('No user messages provided.');
+            }
+            
+            $payload['messages'] = $messages;
+
+            $response = Http::withHeaders([
+                'x-api-key' => $this->apiKey,
+                'anthropic-version' => '2023-06-01',
+                'Content-Type' => 'application/json'
+            ])->timeout($this->timeout)->post('https://api.anthropic.com/v1/messages', $payload);
+
+            if ($response->failed()) {
+                throw new Exception('Failed to get response from Anthropic: ' . $response->body());
+            }
+
+            $body = $response->body();
+            $lines = explode("\n", $body);
+
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line) || !str_starts_with($line, 'data: ')) {
+                    continue;
+                }
+
+                $data = substr($line, 6);
+                if ($data === '[DONE]') {
+                    break;
+                }
+
+                $json = json_decode($data, true);
+                if (isset($json['delta']['text'])) {
+                    yield $json['delta']['text'];
+                } elseif (isset($json['content_block']['text'])) {
+                    yield $json['content_block']['text'];
+                }
             }
         } catch (Exception $e) {
             throw new Exception('Anthropic API error: ' . $e->getMessage());

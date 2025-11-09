@@ -2,6 +2,21 @@
 
 ## [Unreleased]
 
+## [1.14.0] - 2024-12-XX
+
+### Added
+- Suporte completo para streaming de respostas em tempo real.
+- Método `stream(bool $stream = true)` no `AIService` para ativar modo de streaming.
+- Método `streamResponse()` no `AIService` que retorna um `Generator` para processamento de chunks em tempo real.
+- Método `setStreamMode(bool $stream)` no contrato `AIProvider` e `AbstractProvider`.
+- Método `generateStreamResponse()` no contrato `AIProvider` que retorna um `Generator` com chunks da resposta.
+- Implementação de streaming nativo nos provedores: Ollama, OpenAI, Anthropic, Novita, Together e OpenRouter.
+- Suporte automático para streaming quando `stream(true)` é chamado antes de `answer()` ou `run()`.
+
+### Changed
+- Método `generateResponse()` nos provedores agora detecta automaticamente o modo de streaming e usa streaming quando ativado.
+- Provedores agora processam respostas streaming via Server-Sent Events (SSE) quando disponível.
+
 ## [1.12.0] - 2024-12-XX
 
 ### Added
