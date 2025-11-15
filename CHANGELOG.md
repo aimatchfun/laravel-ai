@@ -2,6 +2,51 @@
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-12-XX
+
+### Added
+- Métodos avançados de controle de parâmetros no `NovitaProvider`:
+  - `maxTokens(int $maxTokens)` - Controla o número máximo de tokens gerados
+  - `temperature(float $temperature)` - Controla aleatoriedade (maior = mais criativo)
+  - `topP(float $topP)` - Nucleus sampling, controla probabilidade cumulativa
+  - `topK(int $topK)` - Limita a contagem de tokens candidatos
+  - `presencePenalty(float $presencePenalty)` - Controla tokens repetidos no texto
+  - `frequencyPenalty(float $frequencyPenalty)` - Controla frequência de tokens no texto
+  - `repetitionPenalty(float $repetitionPenalty)` - Penaliza ou encoraja repetição
+
+### Changed
+- **BREAKING CHANGE**: Refatorado `creativityLevel` para `temperature` em toda a codebase
+  - Propriedade `$creativityLevel` renomeada para `$temperature` no `AbstractProvider`
+  - Método `setCreativityLevel()` renomeado para `setTemperature()` no `AbstractProvider` e interface `AIProvider`
+  - Método `creativityLevel()` renomeado para `temperature()` no `AIService`
+  - Propriedade `$creativity` renomeada para `$temperature` no `AIService`
+  - Todos os providers atualizados para usar `$this->temperature` ao invés de `$this->creativityLevel`
+- Removido prefixo "set" dos métodos de parâmetros no `NovitaProvider`:
+  - `setMaxTokens()` → `maxTokens()`
+  - `setTemperature()` → `temperature()`
+  - `setTopP()` → `topP()`
+  - `setTopK()` → `topK()`
+  - `setPresencePenalty()` → `presencePenalty()`
+  - `setFrequencyPenalty()` → `frequencyPenalty()`
+  - `setRepetitionPenalty()` → `repetitionPenalty()`
+- Parâmetros no `NovitaProvider` agora são opcionais e só são incluídos no payload quando definidos
+- Documentação atualizada com novos nomes de métodos e exemplos
+
+### Migration Guide
+Para migrar da versão 1.x para 2.0.0:
+- Substitua todas as chamadas de `creativityLevel()` por `temperature()`
+- Atualize chamadas de métodos do `NovitaProvider` removendo o prefixo "set"
+- Exemplo:
+  ```php
+  // Antes (1.x)
+  AI::creativityLevel(AICreativity::HIGH);
+  $provider->setMaxTokens(1000);
+  
+  // Depois (2.0.0)
+  AI::temperature(AICreativity::HIGH);
+  $provider->maxTokens(1000);
+  ```
+
 ## [1.14.0] - 2024-12-XX
 
 ### Added
