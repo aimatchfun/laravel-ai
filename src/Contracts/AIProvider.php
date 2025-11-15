@@ -29,12 +29,12 @@ interface AIProvider
     public function setUserMessages(array $messages);
 
     /**
-     * Set the creativity level.
+     * Set the temperature.
      *
      * @param float $level
      * @return $this
      */
-    public function setCreativityLevel(float $level);
+    public function setTemperature(float $level);
 
     /**
      * Set the response format for structured outputs.

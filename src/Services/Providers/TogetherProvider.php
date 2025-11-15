@@ -56,7 +56,7 @@ class TogetherProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel
+                'temperature' => $this->temperature
             ];
 
             // Format messages according to Together AI's API (OpenAI compatible)
@@ -103,7 +103,7 @@ class TogetherProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'stream' => true
             ];
 

@@ -56,7 +56,7 @@ class OllamaProvider extends AbstractProvider
 
         $payload = [
             'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
-            'temperature' => $this->creativityLevel,
+            'temperature' => $this->temperature,
             'stream' => false,
         ];
         
@@ -90,7 +90,7 @@ class OllamaProvider extends AbstractProvider
     {
         $payload = [
             'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
-            'temperature' => $this->creativityLevel,
+            'temperature' => $this->temperature,
             'stream' => true,
         ];
         

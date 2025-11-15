@@ -56,7 +56,7 @@ class OpenAIProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel
+                'temperature' => $this->temperature
             ];
 
             // Format messages according to OpenAI's API
@@ -98,7 +98,7 @@ class OpenAIProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'stream' => true
             ];
 

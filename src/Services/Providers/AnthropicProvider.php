@@ -56,7 +56,7 @@ class AnthropicProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'max_tokens' => 1024
             ];
 
@@ -102,7 +102,7 @@ class AnthropicProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'max_tokens' => 1024,
                 'stream' => true
             ];

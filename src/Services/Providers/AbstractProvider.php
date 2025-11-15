@@ -24,7 +24,7 @@ abstract class AbstractProvider implements AIProvider
     /**
      * @var float
      */
-    protected $creativityLevel = 1.0;
+    protected $temperature = 1.0;
 
     /**
      * @var array|null
@@ -88,14 +88,14 @@ abstract class AbstractProvider implements AIProvider
     }
 
     /**
-     * Set the creativity level.
+     * Set the temperature.
      *
      * @param float $level
      * @return $this
      */
-    public function setCreativityLevel(float $level)
+    public function setTemperature(float $level)
     {
-        $this->creativityLevel = $level;
+        $this->temperature = $level;
         return $this;
     }
 

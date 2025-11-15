@@ -56,7 +56,7 @@ class OpenRouterProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'top_p' => 1,
                 'min_p' => 0,
                 'top_k' => 50,
@@ -108,7 +108,7 @@ class OpenRouterProvider extends AbstractProvider
         try {
             $payload = [
                 'model' => $this->model,
-                'temperature' => $this->creativityLevel,
+                'temperature' => $this->temperature,
                 'stream' => true,
                 'top_p' => 1,
                 'min_p' => 0,

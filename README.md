@@ -179,7 +179,7 @@ $response = AI::provider('ollama')
 $response = AI::provider('ollama')
     ->model('llama3')
     ->prompt('Write a poem about Laravel.')
-    ->creativityLevel(AICreativity::HIGH)
+    ->temperature(AICreativity::HIGH)
     ->run();
 
 // Using response format for structured outputs (JSON schema)

@@ -37,7 +37,7 @@
 - Configurações específicas para o Models Lab no arquivo de configuração.
 - Suporte a múltiplos provedores de IA: Ollama, OpenAI, Anthropic, Novita, Models Lab.
 - Interface fluente via Facade `AI` para prompts, modelos, instruções de sistema e criatividade.
-- Métodos `prompt`, `creativityLevel`, `systemInstruction`, `provider`, `model`, `previewMessages` e `run`.
+- Métodos `prompt`, `temperature`, `systemInstruction`, `provider`, `model`, `previewMessages` e `run`.
 - Enum `AICreativity` para níveis de criatividade (`LOW`, `MEDIUM`, `HIGH`).
 - Classe `Message` para validação e formatação de mensagens com roles válidos (`system`, `user`, `assistant`).
 - Método `previewMessages` para fornecer contexto de conversa sem persistência em banco.

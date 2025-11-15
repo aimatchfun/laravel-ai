@@ -70,7 +70,7 @@ class ModelsLabProvider extends AbstractProvider implements AIProvider
                 'key' => $this->apiKey,
                 'messages' => $messages,
                 'max_tokens' => 1000,
-                'temperature' => $this->creativityLevel
+                'temperature' => $this->temperature
             ]);
         
         if ($response->failed()) {
@@ -96,7 +96,7 @@ class ModelsLabProvider extends AbstractProvider implements AIProvider
                 'key' => $this->apiKey,
                 'messages' => $messages,
                 'max_tokens' => 1000,
-                'temperature' => $this->creativityLevel
+                'temperature' => $this->temperature
             ]);
         
         if ($response->failed()) {

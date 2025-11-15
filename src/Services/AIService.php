@@ -33,7 +33,7 @@ class AIService extends Manager
     /**
     * @var float
     */
-    protected $creativity = 1.0;
+    protected $temperature = 1.0;
 
     /**
     * @var array
@@ -137,7 +137,7 @@ class AIService extends Manager
 
         $provider->setUserMessages($allMessages);
 
-        $provider->setCreativityLevel($this->creativity);
+        $provider->setTemperature($this->temperature);
 
         if ($this->responseFormat) {
             $provider->setResponseFormat($this->responseFormat);
@@ -149,14 +149,14 @@ class AIService extends Manager
     }
 
     /**
-    * Set the creativity level.
+    * Set the temperature.
     *
     * @param float|AICreativity $level
     * @return $this
     */
-    public function creativityLevel(AICreativity $level)
+    public function temperature(AICreativity $level)
     {
-        $this->creativity = $level->value * 0.1;
+        $this->temperature = $level->value * 0.1;
 
         return $this;
     }
@@ -200,7 +200,7 @@ class AIService extends Manager
 
         $provider->setUserMessages($allMessages);
 
-        $provider->setCreativityLevel($this->creativity);
+        $provider->setTemperature($this->temperature);
 
         if ($this->responseFormat) {
             $provider->setResponseFormat($this->responseFormat);
@@ -384,7 +384,7 @@ class AIService extends Manager
 
         $provider->setUserMessages($allMessages);
 
-        $provider->setCreativityLevel($this->creativity);
+        $provider->setTemperature($this->temperature);
 
         if ($this->responseFormat) {
             $provider->setResponseFormat($this->responseFormat);
