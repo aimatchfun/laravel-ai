@@ -306,6 +306,45 @@ $data = json_decode($response->answer, true);
 
 **Note:** Currently, only the Novita provider supports structured outputs via `responseFormat`. Please consult the [Novita documentation on structured outputs](https://novita.ai/docs/guides/llm-structured-outputs) to confirm which models support this feature and for specific schema requirements.
 
+### Advanced Parameters (NovitaProvider)
+
+The `NovitaProvider` supports advanced parameter control methods for fine-tuning AI responses. These methods can be chained together when using the provider directly:
+
+```php
+use AIMatchFun\LaravelAI\Services\Providers\NovitaProvider;
+
+$provider = new NovitaProvider(
+    config('ai.providers.novita.api_key'),
+    config('ai.providers.novita.default_model'),
+    config('ai.providers.novita.timeout', 30)
+);
+
+$response = $provider
+    ->setModel('deepseek/deepseek-v3-0324')
+    ->setSystemInstruction('You are a helpful assistant.')
+    ->setUserMessages([['role' => 'user', 'content' => 'Write a creative story.']])
+    ->temperature(0.7)           // Controls randomness (higher = more creative)
+    ->maxTokens(1000)           // Maximum number of tokens to generate
+    ->topP(0.9)                 // Nucleus sampling, controls cumulative probability
+    ->topK(50)                  // Limits candidate token count
+    ->presencePenalty(0.1)       // Controls repeated tokens in the text
+    ->frequencyPenalty(0.1)     // Controls token frequency in the text
+    ->repetitionPenalty(1.1)     // Penalizes or encourages repetition
+    ->generateResponse();
+```
+
+**Available Methods:**
+
+- `temperature(float $temperature)` - Controls randomness. Higher values = more creative responses. Range typically 0.0 to 2.0.
+- `maxTokens(int $maxTokens)` - Sets the maximum number of tokens the AI can generate in its response.
+- `topP(float $topP)` - Nucleus sampling parameter. Controls cumulative probability of token selection. Range typically 0.0 to 1.0.
+- `topK(int $topK)` - Limits the number of candidate tokens considered at each step. Lower values make output more focused.
+- `presencePenalty(float $presencePenalty)` - Penalizes tokens that have already appeared in the text, encouraging more diverse vocabulary.
+- `frequencyPenalty(float $frequencyPenalty)` - Reduces the likelihood of repeating tokens that have appeared frequently in the text.
+- `repetitionPenalty(float $repetitionPenalty)` - General repetition control. Values > 1.0 penalize repetition, values < 1.0 encourage it.
+
+**Note:** All parameters are optional. If not specified, the API will use its default values. Parameters are only included in the request payload when explicitly set.
+
 ## Available Models
 
 ### Novita Models
