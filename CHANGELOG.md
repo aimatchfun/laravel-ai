@@ -5,23 +5,23 @@
 ## [2.0.0] - 2024-12-XX
 
 ### Added
-- Métodos avançados de controle de parâmetros no `NovitaProvider`:
-  - `maxTokens(int $maxTokens)` - Controla o número máximo de tokens gerados
-  - `temperature(float $temperature)` - Controla aleatoriedade (maior = mais criativo)
-  - `topP(float $topP)` - Nucleus sampling, controla probabilidade cumulativa
-  - `topK(int $topK)` - Limita a contagem de tokens candidatos
-  - `presencePenalty(float $presencePenalty)` - Controla tokens repetidos no texto
-  - `frequencyPenalty(float $frequencyPenalty)` - Controla frequência de tokens no texto
-  - `repetitionPenalty(float $repetitionPenalty)` - Penaliza ou encoraja repetição
+- Advanced parameter control methods in `NovitaProvider`:
+  - `maxTokens(int $maxTokens)` - Controls the maximum number of tokens generated
+  - `temperature(float $temperature)` - Controls randomness (higher = more creative)
+  - `topP(float $topP)` - Nucleus sampling, controls cumulative probability
+  - `topK(int $topK)` - Limits candidate token count
+  - `presencePenalty(float $presencePenalty)` - Controls repeated tokens in the text
+  - `frequencyPenalty(float $frequencyPenalty)` - Controls token frequency in the text
+  - `repetitionPenalty(float $repetitionPenalty)` - Penalizes or encourages repetition
 
 ### Changed
-- **BREAKING CHANGE**: Refatorado `creativityLevel` para `temperature` em toda a codebase
-  - Propriedade `$creativityLevel` renomeada para `$temperature` no `AbstractProvider`
-  - Método `setCreativityLevel()` renomeado para `setTemperature()` no `AbstractProvider` e interface `AIProvider`
-  - Método `creativityLevel()` renomeado para `temperature()` no `AIService`
-  - Propriedade `$creativity` renomeada para `$temperature` no `AIService`
-  - Todos os providers atualizados para usar `$this->temperature` ao invés de `$this->creativityLevel`
-- Removido prefixo "set" dos métodos de parâmetros no `NovitaProvider`:
+- **BREAKING CHANGE**: Refactored `creativityLevel` to `temperature` throughout the codebase
+  - Property `$creativityLevel` renamed to `$temperature` in `AbstractProvider`
+  - Method `setCreativityLevel()` renamed to `setTemperature()` in `AbstractProvider` and `AIProvider` interface
+  - Method `creativityLevel()` renamed to `temperature()` in `AIService`
+  - Property `$creativity` renamed to `$temperature` in `AIService`
+  - All providers updated to use `$this->temperature` instead of `$this->creativityLevel`
+- Removed "set" prefix from parameter methods in `NovitaProvider`:
   - `setMaxTokens()` → `maxTokens()`
   - `setTemperature()` → `temperature()`
   - `setTopP()` → `topP()`
@@ -29,20 +29,20 @@
   - `setPresencePenalty()` → `presencePenalty()`
   - `setFrequencyPenalty()` → `frequencyPenalty()`
   - `setRepetitionPenalty()` → `repetitionPenalty()`
-- Parâmetros no `NovitaProvider` agora são opcionais e só são incluídos no payload quando definidos
-- Documentação atualizada com novos nomes de métodos e exemplos
+- Parameters in `NovitaProvider` are now optional and only included in the payload when defined
+- Documentation updated with new method names and examples
 
 ### Migration Guide
-Para migrar da versão 1.x para 2.0.0:
-- Substitua todas as chamadas de `creativityLevel()` por `temperature()`
-- Atualize chamadas de métodos do `NovitaProvider` removendo o prefixo "set"
-- Exemplo:
+To migrate from version 1.x to 2.0.0:
+- Replace all `creativityLevel()` calls with `temperature()`
+- Update `NovitaProvider` method calls by removing the "set" prefix
+- Example:
   ```php
-  // Antes (1.x)
+  // Before (1.x)
   AI::creativityLevel(AICreativity::HIGH);
   $provider->setMaxTokens(1000);
   
-  // Depois (2.0.0)
+  // After (2.0.0)
   AI::temperature(AICreativity::HIGH);
   $provider->maxTokens(1000);
   ```
@@ -50,65 +50,65 @@ Para migrar da versão 1.x para 2.0.0:
 ## [1.14.0] - 2024-12-XX
 
 ### Added
-- Suporte completo para streaming de respostas em tempo real.
-- Método `stream(bool $stream = true)` no `AIService` para ativar modo de streaming.
-- Método `streamResponse()` no `AIService` que retorna um `Generator` para processamento de chunks em tempo real.
-- Método `setStreamMode(bool $stream)` no contrato `AIProvider` e `AbstractProvider`.
-- Método `generateStreamResponse()` no contrato `AIProvider` que retorna um `Generator` com chunks da resposta.
-- Implementação de streaming nativo nos provedores: Ollama, OpenAI, Anthropic, Novita, Together e OpenRouter.
-- Suporte automático para streaming quando `stream(true)` é chamado antes de `answer()` ou `run()`.
+- Full support for real-time response streaming.
+- `stream(bool $stream = true)` method in `AIService` to enable streaming mode.
+- `streamResponse()` method in `AIService` that returns a `Generator` for real-time chunk processing.
+- `setStreamMode(bool $stream)` method in `AIProvider` contract and `AbstractProvider`.
+- `generateStreamResponse()` method in `AIProvider` contract that returns a `Generator` with response chunks.
+- Native streaming implementation in providers: Ollama, OpenAI, Anthropic, Novita, Together and OpenRouter.
+- Automatic streaming support when `stream(true)` is called before `answer()` or `run()`.
 
 ### Changed
-- Método `generateResponse()` nos provedores agora detecta automaticamente o modo de streaming e usa streaming quando ativado.
-- Provedores agora processam respostas streaming via Server-Sent Events (SSE) quando disponível.
+- `generateResponse()` method in providers now automatically detects streaming mode and uses streaming when enabled.
+- Providers now process streaming responses via Server-Sent Events (SSE) when available.
 
 ## [1.12.0] - 2024-12-XX
 
 ### Added
-- Campos `inputTokens` e `outputTokens` no `AIResponse` para rastreamento de uso de tokens.
-- Método `getUsageData()` em todos os provedores para extrair dados de uso das respostas da API.
-- Suporte para extração de dados de tokens nos provedores Novita, OpenAI, Anthropic, Together e OpenRouter.
-- Propriedade `lastResponse` no `AbstractProvider` para armazenar a resposta completa da API.
+- `inputTokens` and `outputTokens` fields in `AIResponse` for token usage tracking.
+- `getUsageData()` method in all providers to extract usage data from API responses.
+- Support for token data extraction in Novita, OpenAI, Anthropic, Together and OpenRouter providers.
+- `lastResponse` property in `AbstractProvider` to store the complete API response.
 
 ### Changed
-- Método `run()` do `AIService` agora extrai e passa dados de uso de tokens para o `AIResponse`.
-- Provedores agora armazenam a resposta completa da API antes de retornar apenas o conteúdo.
+- `run()` method in `AIService` now extracts and passes token usage data to `AIResponse`.
+- Providers now store the complete API response before returning only the content.
 
 ## [1.7.0] - 2024-12-19
 
 ### Added
-- Suporte ao Models Lab provider para integração com a plataforma Models Lab.
-- Provider `ModelsLabProvider` com implementação completa da interface `AIProvider`.
-- Configurações específicas para o Models Lab no arquivo de configuração.
-- Suporte a múltiplos provedores de IA: Ollama, OpenAI, Anthropic, Novita, Models Lab.
-- Interface fluente via Facade `AI` para prompts, modelos, instruções de sistema e criatividade.
-- Métodos `prompt`, `temperature`, `systemInstruction`, `provider`, `model`, `previewMessages` e `run`.
-- Enum `AICreativity` para níveis de criatividade (`LOW`, `MEDIUM`, `HIGH`).
-- Classe `Message` para validação e formatação de mensagens com roles válidos (`system`, `user`, `assistant`).
-- Método `previewMessages` para fornecer contexto de conversa sem persistência em banco.
-- O método `run` retorna um objeto estruturado (`AIResponse`) com `answer`.
-- Exemplo de extensão para provedores customizados.
-- Enum `NovitaModel` com todos os modelos disponíveis da Novita para type safety e autocompletar.
-- Métodos utilitários no enum `NovitaModel`: `getValues()` e `fromValue()`.
-- Documentação no README sobre o uso do enum `NovitaModel` com exemplos práticos.
+- Support for Models Lab provider for integration with the Models Lab platform.
+- `ModelsLabProvider` with complete implementation of the `AIProvider` interface.
+- Specific configurations for Models Lab in the configuration file.
+- Support for multiple AI providers: Ollama, OpenAI, Anthropic, Novita, Models Lab.
+- Fluent interface via `AI` Facade for prompts, models, system instructions and creativity.
+- Methods `prompt`, `temperature`, `systemInstruction`, `provider`, `model`, `previewMessages` and `run`.
+- `AICreativity` enum for creativity levels (`LOW`, `MEDIUM`, `HIGH`).
+- `Message` class for validation and formatting of messages with valid roles (`system`, `user`, `assistant`).
+- `previewMessages` method to provide conversation context without database persistence.
+- The `run` method returns a structured object (`AIResponse`) with `answer`.
+- Extension example for custom providers.
+- `NovitaModel` enum with all available Novita models for type safety and autocomplete.
+- Utility methods in `NovitaModel` enum: `getValues()` and `fromValue()`.
+- README documentation on using the `NovitaModel` enum with practical examples.
 
 ### Changed
-- Removido sistema de persistência de histórico de conversas em banco de dados.
-- Substituído `conversationHistory` por `previewMessages` para contexto de conversa.
-- Removido `conversation_id` do `AIResponse`.
-- Interface pública simplificada e alinhada ao novo sistema de preview messages.
+- Removed conversation history persistence system in database.
+- Replaced `conversationHistory` with `previewMessages` for conversation context.
+- Removed `conversation_id` from `AIResponse`.
+- Simplified public interface aligned with the new preview messages system.
 
 ### Removed
-- Método `conversationHistory` e toda lógica de persistência em banco.
-- Configurações de `conversation_history` no arquivo de configuração.
-- Migration da tabela `laravelai_conversation_histories` (não mais necessária).
-- Métodos `persistMessageToHistory` e `setConversationId`.
+- `conversationHistory` method and all database persistence logic.
+- `conversation_history` configurations in the configuration file.
+- Migration for `laravelai_conversation_histories` table (no longer needed).
+- `persistMessageToHistory` and `setConversationId` methods.
 
 ## [1.0.2] - 2024-06-08
 
 ### Added
-- Seção no README explicando como rodar a migration necessária para o histórico de conversas, incluindo instrução de uso do comando `php artisan migrate`.
+- Section in README explaining how to run the necessary migration for conversation history, including instructions for using the `php artisan migrate` command.
 
 ---
 
-Para detalhes de uso e exemplos, consulte o README.md. 
+For usage details and examples, see README.md.
