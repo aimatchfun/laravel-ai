@@ -63,12 +63,13 @@ class AIService extends Manager
     /**
     * Set the AI provider to use.
     *
-    * @param string $provider
+    * @param string|AIProviderEnum $provider
     * @return $this
     */
-    public function provider(string|AIProvider $provider)
+    public function provider(string|AIProviderEnum $provider)
     {
-        $this->provider = $provider;
+        // Convert enum to string value if needed
+        $this->provider = $provider instanceof AIProviderEnum ? $provider->value : $provider;
         return $this;
     }
 
@@ -118,7 +119,8 @@ class AIService extends Manager
      */
     public function streamResponse()
     {
-        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
+        $driver = $this->provider ?: $this->getDefaultDriver();
+        $provider = $this->driver($driver);
 
         if ($this->model) {
             $provider->setModel($this->model);
@@ -181,7 +183,8 @@ class AIService extends Manager
     */
     public function answer()
     {
-        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
+        $driver = $this->provider ?: $this->getDefaultDriver();
+        $provider = $this->driver($driver);
 
         if ($this->model) {
             $provider->setModel($this->model);
@@ -365,7 +368,8 @@ class AIService extends Manager
     */
     public function run() : AIResponse
     {
-        $provider = $this->driver($this->provider ?: $this->getDefaultDriver());
+        $driver = $this->provider ?: $this->getDefaultDriver();
+        $provider = $this->driver($driver);
 
         if ($this->model) {
             $provider->setModel($this->model);

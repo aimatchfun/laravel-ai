@@ -63,6 +63,8 @@
             "Composer\\Config::disableProcessTimeout",
             "@build",
             "@php vendor/bin/testbench serve --ansi"
-        ]
+        ],
+        "test": "phpunit",
+        "test:integration": "phpunit tests/Integration"
     }
 }

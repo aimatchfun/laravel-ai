@@ -59,4 +59,24 @@ enum AIProvider: string
     {
         return in_array($provider, self::values());
     }
+
+    /**
+     * Get provider from string value
+     */
+    public static function fromValue(string $value): ?self
+    {
+        return self::tryFrom($value);
+    }
+
+    /**
+     * Get provider from string value or throw exception
+     */
+    public static function fromValueOrFail(string $value): self
+    {
+        $provider = self::tryFrom($value);
+        if ($provider === null) {
+            throw new \InvalidArgumentException("Invalid provider: {$value}");
+        }
+        return $provider;
+    }
 } 

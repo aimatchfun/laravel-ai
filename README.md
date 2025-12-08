@@ -2,13 +2,13 @@
 
 A Laravel package that provides a fluent interface for interacting with AI providers:
 
-- Ollama
-- OpenAI
-- Anthropic
-- Novita
-- ModelsLab
-- OpenRouter
-- Together
+- [Ollama](https://ollama.ai/)
+- [OpenAI](https://openai.com/)
+- [Anthropic](https://www.anthropic.com/)
+- [Novita](https://novita.ai/)
+- [ModelsLab](https://modelslab.com/)
+- [OpenRouter](https://openrouter.ai/)
+- [Together](https://www.together.ai/)
 
 ## Installation
 
@@ -135,6 +135,7 @@ The package provides a fluent interface through the `AI` facade:
 
 ```php
 use AIMatchFun\LaravelAI\Facades\AI;
+use AIMatchFun\LaravelAI\Enums\AIProvider;
 use AIMatchFun\LaravelAI\Services\AICreativity;
 
 // Basic usage with default provider
@@ -145,8 +146,13 @@ $response = AI::prompt('What is Laravel?')
 
 // $response->answer (string)
 
-// Specify a provider
+// Specify a provider using string
 $response = AI::provider('ollama')
+    ->prompt('What is Laravel?')
+    ->run();
+
+// Specify a provider using enum (recommended for type safety)
+$response = AI::provider(AIProvider::OLLAMA)
     ->prompt('What is Laravel?')
     ->run();
 
@@ -306,6 +312,44 @@ $data = json_decode($response->answer, true);
 
 **Note:** Currently, only the Novita provider supports structured outputs via `responseFormat`. Please consult the [Novita documentation on structured outputs](https://novita.ai/docs/guides/llm-structured-outputs) to confirm which models support this feature and for specific schema requirements.
 
+## Available Providers Enum
+
+The package provides an enum with all available AI providers for easy access and type safety:
+
+```php
+use AIMatchFun\LaravelAI\Enums\AIProvider;
+
+// Use enum instead of string (recommended for type safety)
+$response = AI::provider(AIProvider::OLLAMA)
+    ->prompt('What is Laravel?')
+    ->run();
+
+// Get all available providers
+$allProviders = AIProvider::values();
+// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'modelslab', 'openrouter', 'together']
+
+// Get providers with labels
+$options = AIProvider::options();
+// Returns: ['ollama' => 'Ollama', 'openai' => 'OpenAI', ...]
+
+// Check if a provider is valid
+if (AIProvider::isValid('ollama')) {
+    // Provider is valid
+}
+
+// Get provider from string value
+$provider = AIProvider::fromValue('ollama');
+// Returns: AIProvider::OLLAMA or null if not found
+
+// Get provider from string value or throw exception
+$provider = AIProvider::fromValueOrFail('ollama');
+// Returns: AIProvider::OLLAMA or throws InvalidArgumentException
+
+// Get label for a provider
+$label = AIProvider::OLLAMA->label();
+// Returns: 'Ollama'
+```
+
 ### Advanced Parameters (NovitaProvider)
 
 The `NovitaProvider` supports advanced parameter control methods for fine-tuning AI responses. These methods can be chained together when using the provider directly:
@@ -344,6 +388,44 @@ $response = $provider
 - `repetitionPenalty(float $repetitionPenalty)` - General repetition control. Values > 1.0 penalize repetition, values < 1.0 encourage it.
 
 **Note:** All parameters are optional. If not specified, the API will use its default values. Parameters are only included in the request payload when explicitly set.
+
+## Available Providers Enum
+
+The package provides an enum with all available AI providers for easy access and type safety:
+
+```php
+use AIMatchFun\LaravelAI\Enums\AIProvider;
+
+// Use enum instead of string
+$response = AI::provider(AIProvider::OLLAMA)
+    ->prompt('What is Laravel?')
+    ->run();
+
+// Get all available providers
+$allProviders = AIProvider::values();
+// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'modelslab', 'openrouter', 'together']
+
+// Get providers with labels
+$options = AIProvider::options();
+// Returns: ['ollama' => 'Ollama', 'openai' => 'OpenAI', ...]
+
+// Check if a provider is valid
+if (AIProvider::isValid('ollama')) {
+    // Provider is valid
+}
+
+// Get provider from string value
+$provider = AIProvider::fromValue('ollama');
+// Returns: AIProvider::OLLAMA or null if not found
+
+// Get provider from string value or throw exception
+$provider = AIProvider::fromValueOrFail('ollama');
+// Returns: AIProvider::OLLAMA or throws InvalidArgumentException
+
+// Get label for a provider
+$label = AIProvider::OLLAMA->label();
+// Returns: 'Ollama'
+```
 
 ## Available Models
 
@@ -393,6 +475,99 @@ public function boot()
 ```
 
 Your custom provider needs to implement the `AIMatchFun\LaravelAI\Contracts\AIProvider` interface or extend the `AIMatchFun\LaravelAI\Services\Providers\AbstractProvider` class.
+
+## Testing
+
+The package includes integration tests for all supported AI providers. These tests make real API calls to verify that each provider works correctly.
+
+### Setup
+
+Before running the tests, create a `.env` file in the root directory with the necessary environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file and add your API keys. You don't need to configure all providers - only the ones you want to test.
+
+### Running Tests
+
+Run all integration tests:
+
+```bash
+php vendor/bin/phpunit tests/Integration
+```
+
+Run tests for a specific provider:
+
+```bash
+php vendor/bin/phpunit tests/Integration/OpenAIProviderTest.php
+```
+
+Run a specific test:
+
+```bash
+php vendor/bin/phpunit tests/Integration/OpenAIProviderTest.php --filter test_can_generate_response
+```
+
+### Test Behavior
+
+- **Tests are automatically skipped** if the provider is not configured (environment variable not set)
+- **Tests make real API calls** to provider APIs - make sure you have credits available
+- **No API keys are hardcoded** - all come from the `.env` file
+
+### Test Coverage
+
+Each provider is tested for:
+
+1. ✅ Basic response generation (`test_can_generate_response`)
+2. ✅ Response generation with system instruction (`test_can_generate_response_with_system_instruction`)
+3. ✅ Streaming response generation (`test_can_generate_stream_response`)
+4. ✅ Temperature configuration (`test_can_set_temperature`)
+5. ✅ Model configuration (`test_can_set_model`)
+6. ✅ Usage data retrieval (`test_can_get_usage_data`) - when supported
+7. ✅ Exception validation when no messages provided (`test_throws_exception_when_no_user_messages`)
+
+### Important Notes
+
+- ⚠️ **Never commit the `.env` file** with your real API keys
+- ⚠️ Tests make real API calls and may consume credits
+- ⚠️ Some providers may have rate limits - run tests carefully
+- ✅ Tests are designed to be idempotent and should not cause side effects
+
+### Simple PHP Test Scripts
+
+Alternatively, you can use simple PHP scripts to test each provider individually:
+
+```bash
+# Test OpenAI
+php tests/test-openai.php
+
+# Test Anthropic
+php tests/test-anthropic.php
+
+# Test Ollama
+php tests/test-ollama.php
+
+# Test Novita
+php tests/test-novita.php
+
+# Test ModelsLab
+php tests/test-modelslab.php
+
+# Test OpenRouter
+php tests/test-openrouter.php
+
+# Test Together
+php tests/test-together.php
+```
+
+These scripts will:
+- Load environment variables from `.env` file
+- Test basic response generation
+- Test system instructions
+- Test streaming responses
+- Test usage data (when available)
 
 ## Contributing
 
