@@ -179,4 +179,31 @@ class TogetherProvider extends AbstractProvider
             'output_tokens' => $usage['completion_tokens'] ?? null,
         ];
     }
+
+    /**
+     * Get response metadata from the last response.
+     *
+     * @return array
+     */
+    public function getResponseMetadata(): array
+    {
+        if (!$this->lastResponse) {
+            return [];
+        }
+
+        return [
+            'id' => $this->lastResponse['id'] ?? null,
+            'object' => $this->lastResponse['object'] ?? null,
+            'created' => $this->lastResponse['created'] ?? null,
+            'model' => $this->lastResponse['model'] ?? null,
+            'index' => $this->lastResponse['choices'][0]['index'] ?? null,
+            'finish_reason' => $this->lastResponse['choices'][0]['finish_reason'] ?? null,
+            'seed' => $this->lastResponse['choices'][0]['seed'] ?? null,
+            'logprobs' => $this->lastResponse['choices'][0]['logprobs'] ?? null,
+            'tool_calls' => $this->lastResponse['choices'][0]['message']['tool_calls'] ?? null,
+            'total_tokens' => $this->lastResponse['usage']['total_tokens'] ?? null,
+            'cached_tokens' => $this->lastResponse['usage']['cached_tokens'] ?? null,
+            'raw' => $this->lastResponse,
+        ];
+    }
 }

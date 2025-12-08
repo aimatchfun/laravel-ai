@@ -170,4 +170,38 @@ class OpenAIProvider extends AbstractProvider
             'output_tokens' => $usage['completion_tokens'] ?? null,
         ];
     }
+
+    /**
+     * Get additional metadata from the last response.
+     *
+     * @return array|null Returns array with additional response metadata, or null if not available
+     */
+    public function getResponseMetadata(): ?array
+    {
+        if (!$this->lastResponse) {
+            return null;
+        }
+
+        $choice = $this->lastResponse['choices'][0] ?? [];
+        $message = $choice['message'] ?? [];
+        $usage = $this->lastResponse['usage'] ?? [];
+
+        return [
+            'model' => $this->lastResponse['model'] ?? null,
+            'id' => $this->lastResponse['id'] ?? null,
+            'object' => $this->lastResponse['object'] ?? null,
+            'created' => $this->lastResponse['created'] ?? null,
+            'index' => $choice['index'] ?? null,
+            'finish_reason' => $choice['finish_reason'] ?? null,
+            'refusal' => $message['refusal'] ?? null,
+            'annotations' => $message['annotations'] ?? null,
+            'logprobs' => $choice['logprobs'] ?? null,
+            'total_tokens' => $usage['total_tokens'] ?? null,
+            'prompt_tokens_details' => $usage['prompt_tokens_details'] ?? null,
+            'completion_tokens_details' => $usage['completion_tokens_details'] ?? null,
+            'service_tier' => $this->lastResponse['service_tier'] ?? null,
+            'system_fingerprint' => $this->lastResponse['system_fingerprint'] ?? null,
+            'raw' => $this->lastResponse,
+        ];
+    }
 }

@@ -6,7 +6,6 @@ A Laravel package that provides a fluent interface for interacting with AI provi
 - [OpenAI](https://openai.com/)
 - [Anthropic](https://www.anthropic.com/)
 - [Novita](https://novita.ai/)
-- [ModelsLab](https://modelslab.com/)
 - [OpenRouter](https://openrouter.ai/)
 - [Together](https://www.together.ai/)
 
@@ -88,12 +87,6 @@ return [
             'default_model' => env('NOVITA_DEFAULT_MODEL', 'deepseek/deepseek-v3-0324'),
             'timeout' => env('NOVITA_TIMEOUT', 30), // Timeout in seconds
         ],
-
-        'modelslab' => [
-            'api_key' => env('MODELSLAB_API_KEY'),
-            'default_model' => env('MODELSLAB_DEFAULT_MODEL', 'llama3'),
-            'timeout' => env('MODELSLAB_TIMEOUT', 30), // Timeout in seconds
-        ],
     ],
 ];
 ```
@@ -117,10 +110,6 @@ ANTHROPIC_TIMEOUT=30
 NOVITA_API_KEY=your-novita-api-key
 NOVITA_DEFAULT_MODEL=deepseek/deepseek-v3-0324
 NOVITA_TIMEOUT=30
-
-MODELSLAB_API_KEY=your-modelslab-api-key
-MODELSLAB_DEFAULT_MODEL=llama3
-MODELSLAB_TIMEOUT=30
 
 OPENROUTER_API_KEY=your-api-key
 OPENROUTER_DEFAULT_MODEL=openrouter/auto
@@ -230,11 +219,61 @@ $inputTokens = $response->inputTokens; // int|null
 $outputTokens = $response->outputTokens; // int|null
 ```
 
+**Standard fields:**
 - `answer`: The AI's response to your prompt(s).
 - `inputTokens`: Number of input tokens used (available for Novita, OpenAI, Anthropic, Together, and OpenRouter providers).
 - `outputTokens`: Number of output tokens used (available for Novita, OpenAI, Anthropic, Together, and OpenRouter providers).
 
-**Note:** Token information is only available for providers that return usage data in their API responses. For providers like Ollama and ModelsLab, these values will be `null`.
+**Ollama-specific fields:**
+- `model`: The model used for the response.
+- `createdAt`: Timestamp when the response was created.
+- `done`: Whether the response is complete.
+- `doneReason`: Reason why the response finished.
+- `totalDuration`: Total duration in nanoseconds.
+- `loadDuration`: Model load duration in nanoseconds.
+- `promptEvalCount`: Number of tokens in the prompt.
+- `promptEvalDuration`: Time spent evaluating the prompt in nanoseconds.
+- `evalCount`: Number of tokens generated.
+- `evalDuration`: Time spent generating tokens in nanoseconds.
+- `thinking`: The thinking process (if available in the model).
+
+**Anthropic-specific fields:**
+- `id`: Unique identifier for the message.
+- `type`: Type of the response (usually "message").
+- `role`: Role of the message (usually "assistant").
+- `stopReason`: Reason why the response stopped (e.g., "end_turn").
+- `stopSequence`: Stop sequence that triggered the end (if any).
+- `cacheCreationInputTokens`: Number of input tokens used for cache creation.
+- `cacheReadInputTokens`: Number of input tokens read from cache.
+- `cacheCreation`: Cache creation details with ephemeral token counts.
+- `serviceTier`: Service tier used for the request (e.g., "standard").
+
+**OpenAI-specific fields:**
+- `id`: Unique identifier for the completion.
+- `object`: Type of object (usually "chat.completion").
+- `created`: Unix timestamp when the response was created.
+- `index`: Index of the choice in the choices array.
+- `finishReason`: Reason why the response finished (e.g., "stop").
+- `refusal`: Refusal message if the model refused to respond.
+- `annotations`: Array of annotations on the response.
+- `logprobs`: Log probabilities for the response.
+- `totalTokens`: Total number of tokens used (input + output).
+- `promptTokensDetails`: Details about prompt tokens (cached_tokens, audio_tokens).
+- `completionTokensDetails`: Details about completion tokens (reasoning_tokens, audio_tokens, etc.).
+- `systemFingerprint`: System fingerprint for the response.
+
+**Novita-specific fields:**
+- `contentFilterResults`: Content filter results including hate, self_harm, sexual, violence, jailbreak, and profanity filters with their filtered/detected status.
+
+**Together-specific fields:**
+- `seed`: The seed value used for generation (if provided).
+- `toolCalls`: Array of tool calls made by the model (if any).
+- `cachedTokens`: Number of cached tokens used in the response.
+
+**Common fields:**
+- `raw`: Raw response data from the provider.
+
+**Note:** Token information is only available for providers that return usage data in their API responses. For providers like Ollama, these values will be `null`. Provider-specific fields are only available when using the corresponding provider.
 
 ### Preview Messages
 
@@ -326,7 +365,7 @@ $response = AI::provider(AIProvider::OLLAMA)
 
 // Get all available providers
 $allProviders = AIProvider::values();
-// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'modelslab', 'openrouter', 'together']
+// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'openrouter', 'together']
 
 // Get providers with labels
 $options = AIProvider::options();
@@ -403,7 +442,7 @@ $response = AI::provider(AIProvider::OLLAMA)
 
 // Get all available providers
 $allProviders = AIProvider::values();
-// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'modelslab', 'openrouter', 'together']
+// Returns: ['ollama', 'openai', 'anthropic', 'novita', 'openrouter', 'together']
 
 // Get providers with labels
 $options = AIProvider::options();
@@ -551,9 +590,6 @@ php tests/test-ollama.php
 
 # Test Novita
 php tests/test-novita.php
-
-# Test ModelsLab
-php tests/test-modelslab.php
 
 # Test OpenRouter
 php tests/test-openrouter.php

@@ -55,7 +55,7 @@ class OllamaProvider extends AbstractProvider
         }
 
         $payload = [
-            'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
+            'model' => $this->model,
             'temperature' => $this->temperature,
             'stream' => false,
         ];
@@ -89,7 +89,7 @@ class OllamaProvider extends AbstractProvider
     public function generateStreamResponse()
     {
         $payload = [
-            'model' => $this->model ?? $this->config->get('ai.providers.ollama.default_model'),
+            'model' => $this->model,
             'temperature' => $this->temperature,
             'stream' => true,
         ];
@@ -145,5 +145,32 @@ class OllamaProvider extends AbstractProvider
     {
         // Ollama doesn't provide usage data in a standardized format
         return null;
+    }
+
+    /**
+     * Get additional metadata from the last response.
+     *
+     * @return array|null Returns array with additional response metadata, or null if not available
+     */
+    public function getResponseMetadata(): ?array
+    {
+        if (!$this->lastResponse) {
+            return null;
+        }
+
+        return [
+            'model' => $this->lastResponse['model'] ?? null,
+            'created_at' => $this->lastResponse['created_at'] ?? null,
+            'done' => $this->lastResponse['done'] ?? null,
+            'done_reason' => $this->lastResponse['done_reason'] ?? null,
+            'total_duration' => $this->lastResponse['total_duration'] ?? null,
+            'load_duration' => $this->lastResponse['load_duration'] ?? null,
+            'prompt_eval_count' => $this->lastResponse['prompt_eval_count'] ?? null,
+            'prompt_eval_duration' => $this->lastResponse['prompt_eval_duration'] ?? null,
+            'eval_count' => $this->lastResponse['eval_count'] ?? null,
+            'eval_duration' => $this->lastResponse['eval_duration'] ?? null,
+            'thinking' => $this->lastResponse['message']['thinking'] ?? null,
+            'raw' => $this->lastResponse,
+        ];
     }
 }

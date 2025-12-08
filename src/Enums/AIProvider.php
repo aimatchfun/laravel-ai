@@ -8,7 +8,6 @@ enum AIProvider: string
     case OPENAI = 'openai';
     case ANTHROPIC = 'anthropic';
     case NOVITA = 'novita';
-    case MODELSLAB = 'modelslab';
     case OPENROUTER = 'openrouter';
     case TOGETHER = 'together';
 
@@ -30,7 +29,6 @@ enum AIProvider: string
             self::OPENAI->value => 'OpenAI',
             self::ANTHROPIC->value => 'Anthropic',
             self::NOVITA->value => 'Novita',
-            self::MODELSLAB->value => 'Modelslab',
             self::OPENROUTER->value => 'OpenRouter',
             self::TOGETHER->value => 'Together',
         ];
@@ -46,7 +44,6 @@ enum AIProvider: string
             self::OPENAI => 'OpenAI',
             self::ANTHROPIC => 'Anthropic',
             self::NOVITA => 'Novita',
-            self::MODELSLAB => 'Modelslab',
             self::OPENROUTER => 'OpenRouter',
             self::TOGETHER => 'Together',
         };

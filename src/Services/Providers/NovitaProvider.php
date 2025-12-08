@@ -395,4 +395,34 @@ class NovitaProvider extends AbstractProvider
             'output_tokens' => $usage['completion_tokens'] ?? null,
         ];
     }
+
+    /**
+     * Get additional metadata from the last response.
+     *
+     * @return array|null Returns array with additional response metadata, or null if not available
+     */
+    public function getResponseMetadata(): ?array
+    {
+        if (!$this->lastResponse) {
+            return null;
+        }
+
+        $choice = $this->lastResponse['choices'][0] ?? [];
+        $usage = $this->lastResponse['usage'] ?? [];
+
+        return [
+            'model' => $this->lastResponse['model'] ?? null,
+            'id' => $this->lastResponse['id'] ?? null,
+            'object' => $this->lastResponse['object'] ?? null,
+            'created' => $this->lastResponse['created'] ?? null,
+            'index' => $choice['index'] ?? null,
+            'finish_reason' => $choice['finish_reason'] ?? null,
+            'total_tokens' => $usage['total_tokens'] ?? null,
+            'prompt_tokens_details' => $usage['prompt_tokens_details'] ?? null,
+            'completion_tokens_details' => $usage['completion_tokens_details'] ?? null,
+            'system_fingerprint' => $this->lastResponse['system_fingerprint'] ?? null,
+            'content_filter_results' => $choice['content_filter_results'] ?? null,
+            'raw' => $this->lastResponse,
+        ];
+    }
 }

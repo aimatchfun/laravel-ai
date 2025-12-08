@@ -52,6 +52,16 @@ abstract class AbstractProvider implements AIProvider
     }
 
     /**
+     * Get additional metadata from the last response.
+     *
+     * @return array|null Returns array with additional response metadata, or null if not available
+     */
+    public function getResponseMetadata(): ?array
+    {
+        return null;
+    }
+
+    /**
      * Set the model to use.
      *
      * @param string $model

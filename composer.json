@@ -8,8 +8,7 @@
         "openai",
         "anthropic",
         "openrouter",
-        "novita",
-        "modelslab"
+        "novita"
     ],
     "type": "library",
     "license": "MIT",

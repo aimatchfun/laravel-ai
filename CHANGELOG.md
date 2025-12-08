@@ -77,10 +77,7 @@ To migrate from version 1.x to 2.0.0:
 ## [1.7.0] - 2024-12-19
 
 ### Added
-- Support for Models Lab provider for integration with the Models Lab platform.
-- `ModelsLabProvider` with complete implementation of the `AIProvider` interface.
-- Specific configurations for Models Lab in the configuration file.
-- Support for multiple AI providers: Ollama, OpenAI, Anthropic, Novita, Models Lab.
+- Support for multiple AI providers: Ollama, OpenAI, Anthropic, Novita.
 - Fluent interface via `AI` Facade for prompts, models, system instructions and creativity.
 - Methods `prompt`, `temperature`, `systemInstruction`, `provider`, `model`, `previewMessages` and `run`.
 - `AICreativity` enum for creativity levels (`LOW`, `MEDIUM`, `HIGH`).

@@ -4,6 +4,7 @@ namespace AIMatchFun\LaravelAI\Services;
 
 use Illuminate\Support\Manager;
 use AIMatchFun\LaravelAI\Contracts\AIProvider;
+use AIMatchFun\LaravelAI\Enums\AIProvider as AIProviderEnum;
 use AIMatchFun\LaravelAI\Services\AICreativity;
 use AIMatchFun\LaravelAI\Services\Message;
 use InvalidArgumentException;
@@ -63,7 +64,7 @@ class AIService extends Manager
     /**
     * Set the AI provider to use.
     *
-    * @param string|AIProviderEnum $provider
+    * @param string|\AIMatchFun\LaravelAI\Enums\AIProvider $provider
     * @return $this
     */
     public function provider(string|AIProviderEnum $provider)
@@ -302,22 +303,6 @@ class AIService extends Manager
     }
 
     /**
-    * Create the ModelsLab driver.
-    *
-    * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
-    */
-    protected function createModelsLabDriver()
-    {
-        $config = $this->config->get('ai.providers.modelslab', []);
-
-        return new Providers\ModelsLabProvider(
-            $config['api_key'] ?? '',
-            $config['default_model'] ?? 'llama3',
-            $config['timeout'] ?? 30
-        );
-    }
-
-    /**
      * Create the OpenRouter driver.
      *
      * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
@@ -403,10 +388,49 @@ class AIService extends Manager
         // Get usage data from provider
         $usageData = $provider->getUsageData();
         
+        // Get additional metadata from provider
+        $metadata = $provider->getResponseMetadata();
+        
         return new AIResponse(
             answer: $response,
             inputTokens: $usageData['input_tokens'] ?? null,
-            outputTokens: $usageData['output_tokens'] ?? null
+            outputTokens: $usageData['output_tokens'] ?? null,
+            model: $metadata['model'] ?? null,
+            createdAt: $metadata['created_at'] ?? null,
+            done: $metadata['done'] ?? null,
+            doneReason: $metadata['done_reason'] ?? null,
+            totalDuration: $metadata['total_duration'] ?? null,
+            loadDuration: $metadata['load_duration'] ?? null,
+            promptEvalCount: $metadata['prompt_eval_count'] ?? null,
+            promptEvalDuration: $metadata['prompt_eval_duration'] ?? null,
+            evalCount: $metadata['eval_count'] ?? null,
+            evalDuration: $metadata['eval_duration'] ?? null,
+            thinking: $metadata['thinking'] ?? null,
+            id: $metadata['id'] ?? null,
+            type: $metadata['type'] ?? null,
+            role: $metadata['role'] ?? null,
+            stopReason: $metadata['stop_reason'] ?? null,
+            stopSequence: $metadata['stop_sequence'] ?? null,
+            cacheCreationInputTokens: $metadata['cache_creation_input_tokens'] ?? null,
+            cacheReadInputTokens: $metadata['cache_read_input_tokens'] ?? null,
+            cacheCreation: $metadata['cache_creation'] ?? null,
+            serviceTier: $metadata['service_tier'] ?? null,
+            object: $metadata['object'] ?? null,
+            created: $metadata['created'] ?? null,
+            index: $metadata['index'] ?? null,
+            finishReason: $metadata['finish_reason'] ?? null,
+            refusal: $metadata['refusal'] ?? null,
+            annotations: $metadata['annotations'] ?? null,
+            logprobs: $metadata['logprobs'] ?? null,
+            totalTokens: $metadata['total_tokens'] ?? null,
+            promptTokensDetails: $metadata['prompt_tokens_details'] ?? null,
+            completionTokensDetails: $metadata['completion_tokens_details'] ?? null,
+            systemFingerprint: $metadata['system_fingerprint'] ?? null,
+            contentFilterResults: $metadata['content_filter_results'] ?? null,
+            seed: $metadata['seed'] ?? null,
+            toolCalls: $metadata['tool_calls'] ?? null,
+            cachedTokens: $metadata['cached_tokens'] ?? null,
+            raw: $metadata['raw'] ?? null
         );
     }
 

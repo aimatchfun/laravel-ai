@@ -180,4 +180,32 @@ class AnthropicProvider extends AbstractProvider
             'output_tokens' => $usage['output_tokens'] ?? null,
         ];
     }
+
+    /**
+     * Get additional metadata from the last response.
+     *
+     * @return array|null Returns array with additional response metadata, or null if not available
+     */
+    public function getResponseMetadata(): ?array
+    {
+        if (!$this->lastResponse) {
+            return null;
+        }
+
+        $usage = $this->lastResponse['usage'] ?? [];
+
+        return [
+            'model' => $this->lastResponse['model'] ?? null,
+            'id' => $this->lastResponse['id'] ?? null,
+            'type' => $this->lastResponse['type'] ?? null,
+            'role' => $this->lastResponse['role'] ?? null,
+            'stop_reason' => $this->lastResponse['stop_reason'] ?? null,
+            'stop_sequence' => $this->lastResponse['stop_sequence'] ?? null,
+            'cache_creation_input_tokens' => $usage['cache_creation_input_tokens'] ?? null,
+            'cache_read_input_tokens' => $usage['cache_read_input_tokens'] ?? null,
+            'cache_creation' => $usage['cache_creation'] ?? null,
+            'service_tier' => $usage['service_tier'] ?? null,
+            'raw' => $this->lastResponse,
+        ];
+    }
 }

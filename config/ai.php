@@ -47,12 +47,6 @@ return [
             'timeout' => env('NOVITA_TIMEOUT', 30), 
         ],
 
-        'modelslab' => [
-            'api_key' => env('MODELSLAB_API_KEY'),
-            'default_model' => env('MODELSLAB_DEFAULT_MODEL', 'llama3'),
-            'timeout' => env('MODELSLAB_TIMEOUT', 30), 
-        ],
-
         'openrouter' => [
             'api_key' => env('OPENROUTER_API_KEY'),
             'default_model' => env('OPENROUTER_DEFAULT_MODEL', 'openrouter/auto'),
