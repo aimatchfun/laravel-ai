@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [2.2.0] - 2024-12-XX
+
+### Added
+- Support for multimodal messages (images) in `AIService` via `previewMessages()` method
+- Vision Language Model support for Novita provider
+- `image:analyse` command for analyzing images using Novita Vision models
+- Support for image URLs and local file paths (automatically converted to base64)
+- Image detail parameter (`high`, `low`, `auto`) for vision analysis
+
+### Changed
+- `previewMessages()` method now supports multimodal content (arrays) in addition to text messages
+- `run()` method now accepts `previewMessages()` without requiring `prompt()` for multimodal use cases
+- Improved error handling for multimodal message validation
+
 ## [2.0.0] - 2024-12-XX
 
 ### Added
