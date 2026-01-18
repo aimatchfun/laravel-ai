@@ -364,8 +364,8 @@ class AIService extends Manager
             $provider->setSystemInstruction($this->systemInstruction);
         }
 
-        if (empty($this->userMessages)) {
-            throw new InvalidArgumentException('No user messages provided. Call prompt() before calling run().');
+        if (empty($this->userMessages) && empty($this->previewMessages)) {
+            throw new InvalidArgumentException('No user messages provided. Call prompt() or previewMessages() before calling run().');
         }
 
         // Merge preview messages with current user messages
@@ -442,8 +442,23 @@ class AIService extends Manager
     */
     public function previewMessages(array $messages)
     {
-        $messageObjects = Message::fromArray($messages);
-        $this->previewMessages = Message::toArrayFormat($messageObjects);
+        // Check if any message has multimodal content (array instead of string)
+        $hasMultimodalContent = false;
+        foreach ($messages as $message) {
+            if (is_array($message) && isset($message['content']) && is_array($message['content'])) {
+                $hasMultimodalContent = true;
+                break;
+            }
+        }
+
+        // If multimodal content detected, use messages directly without conversion
+        if ($hasMultimodalContent) {
+            $this->previewMessages = $messages;
+        } else {
+            // Otherwise, convert using Message class for validation
+            $messageObjects = Message::fromArray($messages);
+            $this->previewMessages = Message::toArrayFormat($messageObjects);
+        }
 
         return $this;
     }
