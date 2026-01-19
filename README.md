@@ -125,7 +125,6 @@ The package provides a fluent interface through the `AI` facade:
 ```php
 use AIMatchFun\LaravelAI\Facades\AI;
 use AIMatchFun\LaravelAI\Enums\AIProvider;
-use AIMatchFun\LaravelAI\Services\AICreativity;
 
 // Basic usage with default provider
 $response = AI::prompt('What is Laravel?')
@@ -170,11 +169,11 @@ $response = AI::provider('ollama')
     ->prompt('What is Laravel?')
     ->run();
 
-// Adjust creativity level (temperature)
+// Adjust creativity level (temperature) - accepts float between 0.1 and 2.0
 $response = AI::provider('ollama')
     ->model('llama3')
     ->prompt('Write a poem about Laravel.')
-    ->temperature(AICreativity::HIGH)
+    ->temperature(1.5)  // Higher values = more creative (0.1 to 2.0)
     ->run();
 
 // Using response format for structured outputs (JSON schema)

@@ -5,7 +5,6 @@ namespace AIMatchFun\LaravelAI\Services;
 use Illuminate\Support\Manager;
 use AIMatchFun\LaravelAI\Contracts\AIProvider;
 use AIMatchFun\LaravelAI\Enums\AIProvider as AIProviderEnum;
-use AIMatchFun\LaravelAI\Services\AICreativity;
 use AIMatchFun\LaravelAI\Services\Message;
 use InvalidArgumentException;
 
@@ -154,12 +153,17 @@ class AIService extends Manager
     /**
     * Set the temperature.
     *
-    * @param float|AICreativity $level
+    * @param float $level Temperature value between 0.1 and 2.0
     * @return $this
+    * @throws \InvalidArgumentException
     */
-    public function temperature(AICreativity $level)
+    public function temperature(float $level)
     {
-        $this->temperature = $level->value * 0.1;
+        if ($level < 0.1 || $level > 2.0) {
+            throw new InvalidArgumentException('Temperature must be between 0.1 and 2.0');
+        }
+
+        $this->temperature = $level;
 
         return $this;
     }

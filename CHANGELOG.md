@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.2.1] - 2024-12-XX
+
 ## [2.2.0] - 2024-12-XX
 
 ### Added
@@ -12,9 +14,13 @@
 - Image detail parameter (`high`, `low`, `auto`) for vision analysis
 
 ### Changed
+- **BREAKING CHANGE**: `temperature()` method now accepts `float` (0.1 to 2.0) instead of `AICreativity` enum
+  - Old: `->temperature(AICreativity::HIGH)`
+  - New: `->temperature(1.5)` (float between 0.1 and 2.0)
 - `previewMessages()` method now supports multimodal content (arrays) in addition to text messages
 - `run()` method now accepts `previewMessages()` without requiring `prompt()` for multimodal use cases
 - Improved error handling for multimodal message validation
+- Added validation to ensure temperature values are between 0.1 and 2.0
 
 ## [2.0.0] - 2024-12-XX
 

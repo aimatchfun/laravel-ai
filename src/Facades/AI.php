@@ -3,7 +3,6 @@
 namespace AIMatchFun\LaravelAI\Facades;
 
 use AIMatchFun\LaravelAI\Enums\AIProvider as AIProviderEnum;
-use AIMatchFun\LaravelAI\Services\AICreativity;
 use AIMatchFun\LaravelAI\Services\AIResponse;
 use Illuminate\Support\Facades\Facade;
 
@@ -16,7 +15,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \AIMatchFun\LaravelAI\Services\AIService model(string $model) Set the model to use
  * @method static \AIMatchFun\LaravelAI\Services\AIService systemInstruction(string $instruction) Set the system instruction
  * @method static \AIMatchFun\LaravelAI\Services\AIService previewMessages(array $messages) Set preview messages for conversation context
- * @method static \AIMatchFun\LaravelAI\Services\AIService temperature(\AIMatchFun\LaravelAI\Services\AICreativity $level) Set the temperature/creativity level
+ * @method static \AIMatchFun\LaravelAI\Services\AIService temperature(float $level) Set the temperature (0.1 to 2.0)
  * @method static \AIMatchFun\LaravelAI\Services\AIService prompt(string $prompt) Set the user prompt message
  * @method static \AIMatchFun\LaravelAI\Services\AIService stream(bool $stream = true) Enable or disable stream mode
  * @method static \AIMatchFun\LaravelAI\Services\AIService responseFormat(array $format) Set the response format for structured outputs
