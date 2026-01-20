@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [2.2.2] - 2025-01-XX
+
+### Fixed
+- Fixed service registration in `AIServiceProvider` to properly inject application instance
+
 ## [2.2.1] - 2024-12-XX
 
 ### Changed
