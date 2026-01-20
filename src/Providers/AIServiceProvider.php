@@ -33,10 +33,5 @@ class AIServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/ai.php' => config_path('ai.php'),
         ], 'config');
-
-        // Publish migrations
-        $this->publishes([
-            __DIR__.'/../../database/migrations/' => database_path('migrations'),
-        ], 'migrations');
     }
 }
