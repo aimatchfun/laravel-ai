@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [2.2.3] - 2025-01-27
+
+### Added
+- New Novita models: `DEEPSEEK_V3_2`, `QWEN3_VL_235B_A22B_THINKING`, `QWEN3_MAX`, `MINIMAX_M2_1`, `GLM_47`, `SKYWORK_R1V4_LITE`
+
 ## [2.2.2] - 2025-01-XX
 
 ### Fixed

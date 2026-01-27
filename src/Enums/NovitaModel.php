@@ -14,6 +14,7 @@ enum NovitaModel: string
     case DEEPSEEK_R1_0528_QWEN3_8B = 'deepseek/deepseek-r1-0528-qwen3-8b';
     case DEEPSEEK_R1_DISTILL_QWEN_14B = 'deepseek/deepseek-r1-distill-qwen-14b';
     case DEEPSEEK_R1_DISTILL_QWEN_32B = 'deepseek/deepseek-r1-distill-qwen-32b';
+    case DEEPSEEK_V3_2 = 'deepseek/deepseek-v3.2';
 
     case ERNIE_4_5_VL_28B_A3B = 'baidu/ernie-4.5-vl-28b-a3b';
     case ERNIE_4_5_21B_A3B = 'baidu/ernie-4.5-21B-a3b';
@@ -31,6 +32,8 @@ enum NovitaModel: string
     case QWEN_3_8B_FP8 = 'qwen/qwen3-8b-fp8';
     case QWEN_NEXT_80B_A3B_INSTRUCT = 'qwen/qwen3-next-80b-a3b-instruct';
     case QWEN3_VL_235B_A22B_INSTRUCT = 'qwen/qwen3-vl-235b-a22b-instruct';
+    case QWEN3_VL_235B_A22B_THINKING = 'qwen/qwen3-vl-235b-a22b-thinking';
+    case QWEN3_MAX = 'qwen/qwen3-max';
 
     case GEMMA_3_1B_IT = 'google/gemma-3-1b-it';
     case GEMMA_3_27B_IT = 'google/gemma-3-27b-it';
@@ -45,10 +48,12 @@ enum NovitaModel: string
     case LLAMA_3_2_3B_INSTRUCT = 'meta-llama/llama-3.2-3b-instruct';
 
     case MINIMAX_M1_80K = 'minimaxai/minimax-m1-80k';
+    case MINIMAX_M2_1 = 'minimax/minimax-m2.1';
 
     case GLM_4_1V_9B_THINKING = 'thudm/glm-4.1v-9b-thinking';
     case GLM_45 = 'zai-org/glm-4.5';
     case GLM_46 = 'zai-org/glm-4.6';
+    case GLM_47 = 'zai-org/glm-4.7';
 
     case MISTRAL_NEMO = 'mistralai/mistral-nemo';
     case MISTRAL_7B_INSTRUCT = 'mistralai/mistral-7b-instruct';
@@ -70,6 +75,8 @@ enum NovitaModel: string
     case KIMI_K2_INSTRUCT = 'moonshotai/kimi-k2-instruct';
     case KIMI_K2_0905 = 'moonshotai/kimi-k2-0905';
     case KIMI_K2_THINKING = 'moonshotai/kimi-k2-thinking';
+
+    case SKYWORK_R1V4_LITE = 'skywork/r1v4-lite';
 
     public static function getValues(): array
     {
