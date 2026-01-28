@@ -75,6 +75,7 @@ enum NovitaModel: string
     case KIMI_K2_INSTRUCT = 'moonshotai/kimi-k2-instruct';
     case KIMI_K2_0905 = 'moonshotai/kimi-k2-0905';
     case KIMI_K2_THINKING = 'moonshotai/kimi-k2-thinking';
+    case KIMI_K2_5 = 'moonshotai/kimi-k2.5';
 
     case SKYWORK_R1V4_LITE = 'skywork/r1v4-lite';
 
@@ -90,7 +91,7 @@ enum NovitaModel: string
                 return $case;
             }
         }
-        
+
         return null;
     }
 }
