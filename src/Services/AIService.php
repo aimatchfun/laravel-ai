@@ -150,11 +150,7 @@ class AIService extends Manager
         $provider->setUserMessages($allMessages);
 
         $provider->setTemperature($this->temperature);
-
-        if ($this->responseFormat) {
-            $provider->setResponseFormat($this->responseFormat);
-        }
-
+        $provider->setResponseFormat($this->responseFormat);
         $provider->setStreamMode(true);
 
         return $provider->generateStreamResponse();
@@ -219,14 +215,8 @@ class AIService extends Manager
         $provider->setUserMessages($allMessages);
 
         $provider->setTemperature($this->temperature);
-
-        if ($this->responseFormat) {
-            $provider->setResponseFormat($this->responseFormat);
-        }
-
-        if ($this->streamMode) {
-            $provider->setStreamMode(true);
-        }
+        $provider->setResponseFormat($this->responseFormat);
+        $provider->setStreamMode($this->streamMode);
 
         $response = $provider->generateResponse();
 
@@ -389,16 +379,11 @@ class AIService extends Manager
 
         $provider->setTemperature($this->temperature);
 
-        if ($this->responseFormat) {
-            $provider->setResponseFormat($this->responseFormat);
-        }
-
-        if ($this->streamMode) {
-            $provider->setStreamMode(true);
-        }
+        $provider->setResponseFormat($this->responseFormat);
+        $provider->setStreamMode($this->streamMode);
 
         $response = $provider->generateResponse();
-        
+
         // Get usage data from provider
         $usageData = $provider->getUsageData();
         

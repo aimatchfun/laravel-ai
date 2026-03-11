@@ -39,10 +39,10 @@ interface AIProvider
     /**
      * Set the response format for structured outputs.
      *
-     * @param array $format
+     * @param array|null $format
      * @return $this
      */
-    public function setResponseFormat(array $format);
+    public function setResponseFormat(?array $format);
 
     /**
      * Set the stream mode.
