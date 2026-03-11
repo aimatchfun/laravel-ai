@@ -426,7 +426,7 @@ class AIService extends Manager
             completionTokensDetails: $metadata['completion_tokens_details'] ?? null,
             systemFingerprint: $metadata['system_fingerprint'] ?? null,
             contentFilterResults: $metadata['content_filter_results'] ?? null,
-            seed: $metadata['seed'] ?? null,
+            seed: $metadata['seed'] ?? -1,
             toolCalls: $metadata['tool_calls'] ?? null,
             cachedTokens: $metadata['cached_tokens'] ?? null,
             raw: $metadata['raw'] ?? null

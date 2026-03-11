@@ -45,7 +45,7 @@ class AIResponse
         // Novita-specific fields
         public ?array $contentFilterResults = null,
         // Together-specific fields
-        public ?int $seed = null,
+        public int|float $seed = -1,
         public ?array $toolCalls = null,
         public ?int $cachedTokens = null,
         public ?array $raw = null
