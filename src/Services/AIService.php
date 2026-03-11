@@ -68,8 +68,18 @@ class AIService extends Manager
     */
     public function provider(string|AIProviderEnum $provider)
     {
+        // Reset state for each new call chain (prevents state leaking between calls on singleton)
+        $this->model = null;
+        $this->systemInstruction = null;
+        $this->userMessages = [];
+        $this->temperature = 1.0;
+        $this->previewMessages = [];
+        $this->responseFormat = null;
+        $this->streamMode = false;
+
         // Convert enum to string value if needed
         $this->provider = $provider instanceof AIProviderEnum ? $provider->value : $provider;
+
         return $this;
     }
 
