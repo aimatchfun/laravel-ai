@@ -18,11 +18,6 @@ class TogetherProvider extends AbstractProvider
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * Create a new Together provider instance.
      *
      * @param string $apiKey

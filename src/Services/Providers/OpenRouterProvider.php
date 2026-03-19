@@ -18,12 +18,7 @@ class OpenRouterProvider extends AbstractProvider
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
-     * Create a new OpenAI provider instance.
+     * Create a new OpenRouter provider instance.
      *
      * @param string $apiKey
      * @param string $defaultModel

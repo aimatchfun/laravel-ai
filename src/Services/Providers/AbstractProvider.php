@@ -37,6 +37,11 @@ abstract class AbstractProvider implements AIProvider
     protected $streamMode = false;
 
     /**
+     * @var int|null
+     */
+    protected $timeout = null;
+
+    /**
      * @var array|null
      */
     protected $lastResponse = null;
@@ -130,6 +135,18 @@ abstract class AbstractProvider implements AIProvider
     public function setStreamMode(bool $stream)
     {
         $this->streamMode = $stream;
+        return $this;
+    }
+
+    /**
+     * Set the timeout for the API request.
+     *
+     * @param int $timeout Timeout in seconds
+     * @return $this
+     */
+    public function setTimeout(int $timeout)
+    {
+        $this->timeout = $timeout;
         return $this;
     }
 

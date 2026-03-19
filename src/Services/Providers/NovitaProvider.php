@@ -20,11 +20,6 @@ class NovitaProvider extends AbstractProvider
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * @var int|null
      */
     protected $maxTokens = null;

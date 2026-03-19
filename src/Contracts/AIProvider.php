@@ -53,6 +53,14 @@ interface AIProvider
     public function setStreamMode(bool $stream);
 
     /**
+     * Set the timeout for the API request.
+     *
+     * @param int $timeout Timeout in seconds
+     * @return $this
+     */
+    public function setTimeout(int $timeout);
+
+    /**
      * Generate a response from the AI.
      *
      * @return string

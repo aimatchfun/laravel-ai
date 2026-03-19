@@ -18,11 +18,6 @@ class OpenAIProvider extends AbstractProvider
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * Create a new OpenAI provider instance.
      *
      * @param string $apiKey

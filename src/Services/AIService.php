@@ -51,6 +51,11 @@ class AIService extends Manager
     protected $streamMode = false;
 
     /**
+     * @var int|null
+     */
+    protected $timeout = null;
+
+    /**
      * Get the default AI provider name.
      *
      * @return string
@@ -76,6 +81,7 @@ class AIService extends Manager
         $this->previewMessages = [];
         $this->responseFormat = null;
         $this->streamMode = false;
+        $this->timeout = null;
 
         // Convert enum to string value if needed
         $this->provider = $provider instanceof AIProviderEnum ? $provider->value : $provider;
@@ -140,6 +146,10 @@ class AIService extends Manager
             $provider->setSystemInstruction($this->systemInstruction);
         }
 
+        if ($this->timeout !== null) {
+            $provider->setTimeout($this->timeout);
+        }
+
         if (empty($this->userMessages)) {
             throw new InvalidArgumentException('No user messages provided. Call prompt() before calling streamResponse().');
         }
@@ -188,6 +198,19 @@ class AIService extends Manager
     }
 
     /**
+    * Set the timeout for API requests.
+    *
+    * @param int $timeout Timeout in seconds
+    * @return $this
+    */
+    public function timeout(int $timeout)
+    {
+        $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    /**
     * Get the answer from the AI.
     *
     * @return string
@@ -203,6 +226,10 @@ class AIService extends Manager
 
         if ($this->systemInstruction) {
             $provider->setSystemInstruction($this->systemInstruction);
+        }
+
+        if ($this->timeout !== null) {
+            $provider->setTimeout($this->timeout);
         }
 
         if (empty($this->userMessages)) {
@@ -366,6 +393,10 @@ class AIService extends Manager
 
         if ($this->systemInstruction) {
             $provider->setSystemInstruction($this->systemInstruction);
+        }
+
+        if ($this->timeout !== null) {
+            $provider->setTimeout($this->timeout);
         }
 
         if (empty($this->userMessages) && empty($this->previewMessages)) {

@@ -12,17 +12,12 @@ class OllamaProvider extends AbstractProvider
     * @var string
     */
     protected $baseUrl;
-    
+
     /**
     * @var string
     */
     protected $model;
-    
-    /**
-    * @var int
-    */
-    protected $timeout;
-    
+
     /**
     * Create a new Ollama provider instance.
     *

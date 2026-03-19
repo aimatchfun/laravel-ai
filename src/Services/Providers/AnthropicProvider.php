@@ -18,11 +18,6 @@ class AnthropicProvider extends AbstractProvider
     protected $model;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * Create a new Anthropic provider instance.
      *
      * @param string $apiKey

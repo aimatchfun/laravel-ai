@@ -8,14 +8,15 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * AI Facade
- * 
+ *
  * Provides a fluent interface for interacting with AI providers.
- * 
+ *
  * @method static \AIMatchFun\LaravelAI\Services\AIService provider(string|\AIMatchFun\LaravelAI\Enums\AIProvider $provider) Set the AI provider to use
  * @method static \AIMatchFun\LaravelAI\Services\AIService model(string $model) Set the model to use
  * @method static \AIMatchFun\LaravelAI\Services\AIService systemInstruction(string $instruction) Set the system instruction
  * @method static \AIMatchFun\LaravelAI\Services\AIService previewMessages(array $messages) Set preview messages for conversation context
  * @method static \AIMatchFun\LaravelAI\Services\AIService temperature(float $level) Set the temperature (0.1 to 2.0)
+ * @method static \AIMatchFun\LaravelAI\Services\AIService timeout(int $timeout) Set the timeout for API requests in seconds
  * @method static \AIMatchFun\LaravelAI\Services\AIService prompt(string $prompt) Set the user prompt message
  * @method static \AIMatchFun\LaravelAI\Services\AIService stream(bool $stream = true) Enable or disable stream mode
  * @method static \AIMatchFun\LaravelAI\Services\AIService responseFormat(array $format) Set the response format for structured outputs
