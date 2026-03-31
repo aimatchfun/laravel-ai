@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-03-31
+
+### Added
+- Suporte a **Laravel 13** (`illuminate/support` ^11.0|^12.0|^13.0).
+
+### Changed
+- PHP mínimo alinhado a projetos Laravel 13: **^8.3|^8.4** (antes ^8.4 apenas).
+- Dev: **orchestra/testbench** ^11.0 para workbench com Laravel 13.
+
 ## [2.2.3] - 2025-01-27
 
 ### Added
