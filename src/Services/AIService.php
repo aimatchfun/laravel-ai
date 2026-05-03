@@ -366,6 +366,23 @@ class AIService extends Manager
     }
 
     /**
+     * Create the Grok (xAI) driver.
+     *
+     * @return \AIMatchFun\LaravelAI\Contracts\AIProvider
+     */
+    protected function createGrokDriver()
+    {
+        $config = $this->config->get('ai.providers.grok', []);
+
+        return new Providers\GrokProvider(
+            $config['api_key'] ?? '',
+            $config['default_model'] ?? 'grok-4.3',
+            $config['timeout'] ?? 30,
+            $config['base_url'] ?? 'https://api.x.ai/v1'
+        );
+    }
+
+    /**
     * Define a mensagem do usuário (prompt principal).
     *
     * @param string $prompt

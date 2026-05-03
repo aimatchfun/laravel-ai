@@ -10,6 +10,7 @@ enum AIProvider: string
     case NOVITA = 'novita';
     case OPENROUTER = 'openrouter';
     case TOGETHER = 'together';
+    case GROK = 'grok';
 
     /**
      * Get all available providers as an array
@@ -31,6 +32,7 @@ enum AIProvider: string
             self::NOVITA->value => 'Novita',
             self::OPENROUTER->value => 'OpenRouter',
             self::TOGETHER->value => 'Together',
+            self::GROK->value => 'Grok (xAI)',
         ];
     }
 
@@ -46,6 +48,7 @@ enum AIProvider: string
             self::NOVITA => 'Novita',
             self::OPENROUTER => 'OpenRouter',
             self::TOGETHER => 'Together',
+            self::GROK => 'Grok (xAI)',
         };
     }
 

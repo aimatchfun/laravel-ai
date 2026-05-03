@@ -58,5 +58,12 @@ return [
             'default_model' => env('TOGETHER_DEFAULT_MODEL', 'meta-llama/Llama-3.3-70B-Instruct-Turbo'),
             'timeout' => env('TOGETHER_TIMEOUT', 30),
         ],
+
+        'grok' => [
+            'api_key' => env('XAI_API_KEY'),
+            'base_url' => env('XAI_BASE_URL', 'https://api.x.ai/v1'),
+            'default_model' => env('XAI_DEFAULT_MODEL', 'grok-4.3'),
+            'timeout' => env('XAI_TIMEOUT', 30),
+        ],
     ],
 ];
