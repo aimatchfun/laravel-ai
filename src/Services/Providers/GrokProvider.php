@@ -79,6 +79,8 @@ class GrokProvider extends AbstractProvider
 
             $payload['messages'] = $messages;
 
+            $this->applyResponseFormatToPayload($payload);
+
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->apiKey,
                 'Content-Type' => 'application/json',
@@ -121,6 +123,8 @@ class GrokProvider extends AbstractProvider
             }
 
             $payload['messages'] = $messages;
+
+            $this->applyResponseFormatToPayload($payload);
 
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->apiKey,
@@ -206,5 +210,62 @@ class GrokProvider extends AbstractProvider
             'system_fingerprint' => $this->lastResponse['system_fingerprint'] ?? null,
             'raw' => $this->lastResponse,
         ];
+    }
+
+    /**
+     * Attach OpenAI/x.ai-compatible structured output config when set via AbstractProvider::setResponseFormat().
+     *
+     * @param  array<string, mixed>  $payload
+     */
+    protected function applyResponseFormatToPayload(array &$payload): void
+    {
+        if ($this->responseFormat === null || $this->responseFormat === []) {
+            return;
+        }
+
+        $payload['response_format'] = $this->normalizeResponseFormatForGrok($this->responseFormat);
+    }
+
+    /**
+     * Grok follows x.ai structured outputs (response_format.type json_schema, etc.).
+     * Maps legacy `{ "type": "json_object", "schema": {...} }` (Novita-style) to `json_schema` + strict envelope.
+     *
+     * @param  array<string, mixed>  $format
+     * @return array<string, mixed>
+     */
+    protected function normalizeResponseFormatForGrok(array $format): array
+    {
+        $type = $format['type'] ?? '';
+
+        if ($type === 'json_object' && isset($format['schema']) && is_array($format['schema'])) {
+            $jsonSchemaMeta = isset($format['json_schema']) && is_array($format['json_schema'])
+                ? $format['json_schema']
+                : [];
+
+            $name = 'structured_response';
+            if (isset($jsonSchemaMeta['name']) && is_string($jsonSchemaMeta['name']) && $jsonSchemaMeta['name'] !== '') {
+                $name = $jsonSchemaMeta['name'];
+            } elseif (isset($format['name']) && is_string($format['name']) && $format['name'] !== '') {
+                $name = $format['name'];
+            }
+
+            $strict = true;
+            if (array_key_exists('strict', $jsonSchemaMeta)) {
+                $strict = (bool) $jsonSchemaMeta['strict'];
+            } elseif (array_key_exists('strict', $format)) {
+                $strict = (bool) $format['strict'];
+            }
+
+            return [
+                'type' => 'json_schema',
+                'json_schema' => [
+                    'name' => $name,
+                    'strict' => $strict,
+                    'schema' => $format['schema'],
+                ],
+            ];
+        }
+
+        return $format;
     }
 }
